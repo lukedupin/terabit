@@ -1,0 +1,1 @@
+from website.libs.memcached_ex.memcached import MemcachedCache

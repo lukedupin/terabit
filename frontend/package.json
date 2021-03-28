@@ -1,0 +1,22 @@
+{
+  "name": "terabit",
+  "description": "Location based NFT viewer.",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "dependencies": {
+    "mapbox-gl": "^2.2.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-scripts": "^4.0.1",
+    "worker-loader": "^3.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "author": "Fluid software designs, LLC",
+  "license": "N/A"
+}
