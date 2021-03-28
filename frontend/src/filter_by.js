@@ -3,8 +3,6 @@ import React from 'react';
 class Checkbox extends  React.Component {
     constructor(props) {
         super(props);
-        console.log("Label "+ props.label)
-        console.log("Tab IDX "+ props.tab_idx)
         this.state = {
             checked: true,
             label: props.label,
@@ -15,9 +13,9 @@ class Checkbox extends  React.Component {
     }
 
     handleToggle() {
-        this.setState({
-            checked: !this.state.checked,
-        });
+        const checked = !this.state.checked
+        this.setState({ checked });
+        this.props.onChange( this.state.label, checked )
     }
 
     render() {
@@ -52,23 +50,31 @@ export default class FilterBy extends React.Component {
     componentDidMount() {
     }
 
-    handleChange() {
-        /*
-        this.setState({
-            search: event.target.value,
-        });
+    handleChange( label, checked ) {
+        switch (label) {
+            case "For sale":
+                this.setState({for_sale: checked})
+                break;
 
-        console.log("Fetch for: "+ event.target.value )
-         */
+            case "Claimed":
+                this.setState({claimed: checked})
+                break;
+
+            case "Empty":
+                this.setState({empty: checked})
+                break;
+
+            default: break
+        }
     }
 
     render() {
         const { for_sale, claimed, empty } = this.state;
         return (
             <div className="filter_by">
-                <Checkbox label="For sale" tab_idx="0" />
-                <Checkbox label="Claimed" tab_idx="1" />
-                <Checkbox label="Empty" tab_idx="2" />
+                <Checkbox onChange={this.handleChange} label="For sale" tab_idx="0" />
+                <Checkbox onChange={this.handleChange} label="Claimed" tab_idx="1" />
+                <Checkbox onChange={this.handleChange} label="Empty" tab_idx="2" />
             </div>
         );
     }

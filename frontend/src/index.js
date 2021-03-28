@@ -14,8 +14,8 @@ class Map extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            lng: -70.9,
-            lat: 42.35,
+            lat: 37.7749,
+            lng: -122.4194,
             zoom: 9
         };
         this.mapContainer = React.createRef();
