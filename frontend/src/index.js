@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from "./search";
+import FilterBy from "./filter_by";
 import fetch_js from './util'
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl-unminified.js';
@@ -30,24 +31,24 @@ class Map extends React.PureComponent {
         });
 
         map.on('move', () => {
-            this.setState({
+            const state = {
                 lng: map.getCenter().lng.toFixed(4),
                 lat: map.getCenter().lat.toFixed(4),
                 zoom: map.getZoom().toFixed(2)
-            });
+            }
+            this.setState( state );
+
+            console.log("Fetch for: "+ state.lat +", "+ state.lng);
         });
     }
 
     render() {
-        const { lng, lat, zoom } = this.state;
+        //const { lng, lat, zoom } = this.state;
         return (
             <div>
-                <div className="sidebar">
-                    Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-                </div>
-                <div ref={this.mapContainer} className="map-container">
-                    <Search />
-                </div>
+                <Search />
+                <FilterBy />
+                <div ref={this.mapContainer} className="map-container" />
             </div>
         );
     }

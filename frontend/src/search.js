@@ -6,26 +6,32 @@ export default class Search extends React.Component {
         this.state = {
             search: '',
         };
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
     }
 
-    onChangeHandler( event ) {
+    handleChange( event ) {
         this.setState({
             search: event.target.value,
         });
 
-        console.log("Fetch for: "+ this.state.search )
+        console.log("Fetch for: "+ event.target.value )
     }
 
     render() {
+        const { search } = this.state;
         return (
-            <input
-                type="text"
-                placeholder="Search"
-                onChange={this.onChangeHandler}
-            />
+            <div className="search">
+                <input
+                    type="text"
+                    value={search}
+                    placeholder="Search"
+                    onChange={this.handleChange}
+                />
+            </div>
         );
     }
 }
