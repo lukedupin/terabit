@@ -47,7 +47,8 @@ export default class FilterBy extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
+        this.props.onChange( this.state )
     }
 
     handleChange( label, checked ) {
@@ -70,6 +71,7 @@ export default class FilterBy extends React.Component {
 
     render() {
         const { for_sale, claimed, empty } = this.state;
+
         return (
             <div className="filter_by">
                 <Checkbox onChange={this.handleChange} label="For sale" tab_idx="0" />

@@ -18,27 +18,52 @@ class Map extends React.PureComponent {
             lng: -122.4194,
             zoom: 9
         };
+
         this.mapContainer = React.createRef();
+        this.handleFilter = this.handleFilter.bind(this);
     }
 
     componentDidMount() {
         const { lng, lat, zoom } = this.state;
-        const map = new mapboxgl.Map({
+        this.map = new mapboxgl.Map({
             container: this.mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [lng, lat],
             zoom: zoom
         });
 
-        map.on('move', () => {
-            const state = {
+        this.map.on('move', () => {
+            this.setState( {
                 lng: map.getCenter().lng.toFixed(4),
                 lat: map.getCenter().lat.toFixed(4),
                 zoom: map.getZoom().toFixed(2)
-            }
-            this.setState( state );
+            });
+        });
+    }
 
-            console.log("Fetch for: "+ state.lat +", "+ state.lng);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("Re-run search")
+
+        const { lat, lng, zoom } = this.state;
+        Util.fetch_js('/terrain/list/', { lat, lng, zoom})
+            .then( resp => resp.toJson() )
+            .this( js => {
+                console.log("Load squares")
+            })
+    }
+
+    handleFilter( js ) {
+    }
+
+    handleSearch( js ) {
+        map.flyTo({
+            center: [ js.lng, js.lat ],
+            essential: true
+        });
+
+        this.setState({
+            lat: js.lat,
+            lng: js.lng,
         });
     }
 
@@ -47,7 +72,9 @@ class Map extends React.PureComponent {
         return (
             <div>
                 <Search />
-                <FilterBy />
+                <FilterBy
+                    onChange={this.handleFilter}
+                />
                 <div ref={this.mapContainer} className="map-container" />
             </div>
         );

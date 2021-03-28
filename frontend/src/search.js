@@ -1,4 +1,5 @@
 import React from 'react';
+import Util from './util';
 
 export default class Search extends React.Component {
     constructor(props) {
@@ -10,15 +11,18 @@ export default class Search extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
+        Util.fetch_ex('/search/', this.state )
+            .then( resp => resp.toJson() )
+            .then( js => {
+                this.props.onSearch( js )
+            })
     }
 
     handleChange( event ) {
         this.setState({
             search: event.target.value,
         });
-
-        console.log("Fetch for: "+ event.target.value )
     }
 
     render() {
