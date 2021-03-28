@@ -1,22 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Search from "./search";
+import fetch_js from './util'
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl-unminified.js';
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
 
 mapboxgl.workerClass = MapboxWorker;
 mapboxgl.accessToken = 'pk.eyJ1IjoidGVyYWJpdCIsImEiOiJja21zMnpkaXMwZGdqMm5teDdpNWN1ZHVkIn0.mIPDv8iZ1mMEq51n6jt10g';
-
-function fetch_js( url, js ) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( js )
-    };
-
-    return fetch( url, requestOptions )
-}
-
 
 class Map extends React.PureComponent {
     constructor(props) {
@@ -47,21 +38,16 @@ class Map extends React.PureComponent {
         });
     }
 
-    onHandleSubmit() {
-        fetch_js('/version/current/', { dog: 'A dog dog'} )
-            .then( resp => resp.json())
-            .then( res => console.log(res) );
-    }
-
     render() {
         const { lng, lat, zoom } = this.state;
         return (
             <div>
                 <div className="sidebar">
                     Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-                <button type="submit" onClick={this.onHandleSubmit}>Post a thing</button>
                 </div>
-                <div ref={this.mapContainer} className="map-container" />
+                <div ref={this.mapContainer} className="map-container">
+                    <Search />
+                </div>
             </div>
         );
     }
