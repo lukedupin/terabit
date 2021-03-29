@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'website'
 ]
 
 MIDDLEWARE = [
@@ -78,8 +79,20 @@ WSGI_APPLICATION = 'pysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'terabit',                      # Or path to database file if using sqlite3.
+        'USER': 'ldupin',                      # Not used with sqlite3.
+        'PASSWORD': 'aibeb4ahviZ8ooNg',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'TEST': {
+            'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'terabit_test',                      # Or path to database file if using sqlite3.
+            'USER': 'ldupin',                      # Not used with sqlite3.
+            'PASSWORD': 'aibeb4ahviZ8ooNg',                  # Not used with sqlite3.
+            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        }
     }
 }
 
