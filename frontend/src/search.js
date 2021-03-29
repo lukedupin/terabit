@@ -11,12 +11,19 @@ export default class Search extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidUpdate() {
-        Util.fetch_ex('/search/', this.state )
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if ( prevState.search == this.state.search ) {
+            return
+        }
+
+        /*
+        //Run a search
+        fetch_js('/search/', this.state )
             .then( resp => resp.toJson() )
             .then( js => {
                 this.props.onSearch( js )
             })
+         */
     }
 
     handleChange( event ) {

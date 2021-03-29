@@ -4,8 +4,7 @@ from django.conf import settings
 
 from website.cache import cache
 from website.helpers.json_api import reqArgs, jsonResponse, errResponse
-from website.models import Activity, Capture, Human, Friendship, Device, common, DeviceGroup, DeviceGroupAccess, Group, RaceEvent, GroupAccess, FriendshipModifier
-from website.models.common import FriendshipEnum
+from website.models import common, Human
 from website.helpers import util, geo, s3
 
 import uuid, random, re, os
@@ -20,16 +19,6 @@ def gen_access_code():
             code += "%d" % value
 
     return code
-
-
-def reset_push_tokens( human ):
-    for dev in Device.objects.filter(human=human):
-        dev.push_token = None
-        dev.save()
-
-    if (dev := human.getPrimaryDevice()) is not None:
-        dev.push_token = None
-        dev.save()
 
 
 @csrf_exempt
@@ -80,29 +69,11 @@ def create( request, username, email, phone_number, real_name, create_device,
                                   lat=util.xfloat(lat),
                                   lng=util.xfloat(lng) )
 
-    # Create a device to?
-    device = {}
-    if util.xbool(create_device):
-        if util.xstr(device_name) == "":
-            device_name = "%s's Device" % username
-        device_group = DeviceGroup.objects.create(name="%s's Device group" % username)
-        DeviceGroupAccess.objects.create( human=human, device_group=device_group )
-
-        device = Device.objects.create( device_group=device_group,
-                                        human=human,
-                                        name=device_name,
-                                        category=Device.CATEGORY_CELL_PHONE,
-                                        push_token=push_token ).toJson()
-
-    # Reset the human list
-    cache.clearHumanList()
-
     # Load the user session data
     js_usr = human.toJsonFull()
     request.session['usr'] = { 'id': int(human.id), **js_usr }
     return jsonResponse( request, {'session': str(human.session),
-                                   'human': js_usr,
-                                   'device': device } )
+                                   'human': js_usr } )
 
 
 @csrf_exempt
@@ -135,17 +106,6 @@ def auth( request, human_uid, session, cell_type, device_uid, *args, **kwargs ):
     js_usr = human.toJsonFull()
     request.session['usr'] = { 'id': int(human.id), **js_usr }
 
-    # Is the user wanting to assign a device type?
-    if cell_type is not None and device_uid is not None:
-        if (cat := Device.getCategoryFromStr( cell_type )) < 0:
-            return errResponse( request, "Invalid category code")
-
-        # Should we event update?
-        if (device := Device.getByUid( device_uid)) is not None and \
-           device.human_id == human.id and device.category != cat:
-            device.category = cat
-            device.save()
-
     return jsonResponse( request, js_usr )
 
 
@@ -159,9 +119,6 @@ def invalidate_auth( request, human_uid, session, *args, **kwargs ):
     if (human := Human.getBySession(human_uid, session)) is None:
         return errResponse( request, "Couldn't find you?" )
 
-    # Reset the push token
-    reset_push_tokens( human )
-
     # Is the account blocked?
     if human.blocked:
         return errResponse( request, "Account blocked")
@@ -171,6 +128,7 @@ def invalidate_auth( request, human_uid, session, *args, **kwargs ):
     human.save()
 
     return jsonResponse( request, {} )
+
 
 @csrf_exempt
 @reqArgs( sess_req=[],
@@ -196,6 +154,7 @@ def generate_recovery_phone_number_auth( request, phone_number, *args, **kwargs 
 
     return jsonResponse( request, {} )
 
+
 @csrf_exempt
 @reqArgs( post_req=[ ('phone_number', str),
                      ('access_code', str),
@@ -220,18 +179,12 @@ def recovery_phone_number_auth( request, phone_number, access_code, *args, **kwa
     human.session = uuid.uuid4()
     human.save()
 
-    reset_push_tokens( human )
-
-    # Create a device to?
-    device = human.getPrimaryDevice()
-    device_js = device.toJson() if device is not None else {}
-
     # Load the user session data
     js_usr = human.toJsonFull()
     request.session['usr'] = { 'id': int(human.id), **js_usr }
     return jsonResponse( request, {'session': str(human.session),
-                                   'human': js_usr,
-                                   'device': device_js } )
+                                   'human': js_usr })
+
 
 @csrf_exempt
 @reqArgs( sess_req=[],
@@ -279,8 +232,6 @@ def recovery_email_auth( request, email, access_code, *args, **kwargs ):
     # if this is the first login, increment their login count
     human.session = uuid.uuid4()
     human.save()
-
-    reset_push_tokens( human )
 
     # Create a device to?
     device = human.getPrimaryDevice()
@@ -393,108 +344,6 @@ def modify( request, usr, username, desc, real_name, email, phone_number, *args,
 
 @csrf_exempt
 @reqArgs( sess_req=[('usr', dict)],
-          post_req=[ ('human_uid', str),
-              ],
-          )
-def summary( request, usr, human_uid, *args, **kwargs ):
-    if util.xstr(human_uid) == "":
-        human_uid = usr['uid']
-    if (human := Human.getByUid(human_uid)) is None:
-        return errResponse( request, "Couldn't find you?" )
-
-    # Friendship modifier
-    friendship_modifier = {}
-    if (mod := FriendshipModifier.getByConnection( human.id, usr['id'])) is not None:
-        if mod.modifier == FriendshipModifier.MODIFIER_BLOCKED:
-            return errResponse( request, "Account blocked")
-        friendship_modifier = mod.toJson()
-
-    # Is the account blocked?
-    if human.blocked:
-        return errResponse( request, "Account blocked")
-
-    # Get the friendship code
-    friendship = {}
-    friendship_code = FriendshipEnum.FOLLOWING
-    if human.id == usr['id']:
-        friendship_code = FriendshipEnum.INNER_CIRCLE # I am the same as inner circle, everything!
-
-    elif (friend := Friendship.getByConnection(target_id=human.id, source_id=usr['id'])) is not None:
-        friendship = friend.toJson()
-        friendship_code = friend.friendship
-    privacy_lookup = common.privacyLookup( friendship_code )
-    human_privacy = human.getPrivacy()
-
-    # Calc the capture related summary
-    capture_count = util.xint( human.capture_set.count() )
-    total_dist = util.xfloat( human.capture_set.aggregate(models.Sum('dist'))['dist__sum'])
-    group_count = util.xint( human.groupaccess_set.count() )
-
-    # Get the number of friends and followers that I have
-    followers_count = Friendship.objects.filter(target_id=human.id).count()
-    following_count = Friendship.objects.filter(source_id=human.id).count()
-    friend_request_count = FriendshipModifier.objects.filter(target_id=usr['id'], modifier=FriendshipModifier.MODIFIER_FRIEND_REQUEST).count()
-
-    # Pull The user's captures
-    captures = []
-    if human_privacy.captures in privacy_lookup:
-        captures = [x.toJson() for x in human.capture_set.order_by('-start_ts')]
-
-    # Pull the user's groups
-    if human_privacy.groups in privacy_lookup:
-        grp_ids = [int(x.group_id) for x in human.groupaccess_set.all()]
-    else: # Mutual only
-        group_lookup = {int(x.group_id) for x in GroupAccess.objects.filter(human_id=usr['id'])}
-        grp_ids = [int(x.group_id) for x in human.groupaccess_set.all() if x.group_id in group_lookup]
-    grp_type = (Group.TYPE_PUBLIC, Group.TYPE_PRIVATE)
-    groups = [x.toJson(False) for x in Group.objects.filter(id__in=grp_ids, type__in=grp_type)]
-
-    # Pull the user's friends
-    if human_privacy.friends in privacy_lookup:
-        friend_ids = [int(x.target_id) for x in Friendship.objects.filter(source_id=usr['id'])]
-    else: # Mutual only
-        friend_lookup = {int(x.target_id): True for x in Friendship.objects.filter(source_id=human.id)}
-        friend_ids = [int(x.target_id) for x in Friendship.objects.filter(source_id=usr['id']) if x.target_id in friend_lookup]
-    friends = [x.toJson() for x in Human.objects.filter(id__in=friend_ids)]
-
-    # Pull the user's posts
-    group_posts = []
-    if human_privacy.group_posts in privacy_lookup:
-        group_posts = [x.toJson() for x in human.grouppost_set.order_by('-timestamp')]
-
-    # get all the user events
-    events = []
-    if human_privacy.events in privacy_lookup:
-        event_ids = [int(x.race_event_id) for x in human.raceteam_set.all()]
-        events = [x.toJson() for x in RaceEvent.objects.filter(id__in=event_ids).order_by('-start_ts') if util.timeToUnix(x.start_ts) > (365 * 24 * 3600 * 1000)]
-
-    return jsonResponse( request, {
-        "human": human.toJson( friendship_code ),
-        "human_privacy": human_privacy.toJson(),
-        "group_count": group_count,
-        "capture_count": capture_count,
-        "total_dist": total_dist,
-
-        "following_count": following_count,
-        "followers_count": followers_count,
-        "friend_request_count": friend_request_count,
-
-        "friendship": friendship,
-        "friendship_modifier": friendship_modifier,
-
-        "captures": captures,
-        "groups": groups,
-        "friends": friends,
-        "group_posts": group_posts,
-        "events": events,
-
-        "activity_count": capture_count, # TODO Remove this, its for legacy after 2.1
-        "friend_count": followers_count, # TODO Remove this, its for legacy after 2.1.0
-    } )
-
-# TODO This should only give toJson() not toJsonFull(), Either remove or reduce access
-@csrf_exempt
-@reqArgs( sess_req=[('usr', dict)],
           post_req=[('human_uid', str),
                     ]
           )
@@ -507,26 +356,15 @@ def desc( request, usr, human_uid, *args, **kwargs ):
     if human.blocked:
         return errResponse( request, "Account blocked")
 
-    # Check access
-    if human.id != usr['id'] and \
-       Friendship.getByConnection(target_id=human.id,
-                                  source_id=usr['id'],
-                                  friendship=(FriendshipEnum.INNER_CIRCLE, FriendshipEnum.FRIEND)) is None:
-            return errResponse( request, "You don't have access" )
-
     return jsonResponse( request, human.toJsonFull() )
 
 
-# TODO This needs to be checking friendship model info
 @csrf_exempt
 @reqArgs( sess_opt=[('usr', dict)],
           post_req=[('human_uids', list),
                     ]
           )
 def bulk_desc( request, usr, human_uids, *args, **kwargs ):
-    #friend_ids = [usr['id']]
-    #friend_ids += [int(x.target_id) for x in Friendship.objects.filter(source_id=usr['id'], friendship__in=(FriendshipEnum.FRIEND, FriendshipEnum.INNER_CIRCLE))]
-
     resp = []
     unique = {}
     for uid in human_uids:
@@ -540,10 +378,7 @@ def bulk_desc( request, usr, human_uids, *args, **kwargs ):
             human = Human.getById(usr['id'])
         if human is None:
             human = Human.getByUid(uid)
-
-        # Only allow uids that I have access to
-        #print("WARN: human.id not in friends, but allowing download!")
-        if human is None:# or human.id not in ~:
+        if human is None:
             continue
 
         # Is the account blocked?
@@ -584,8 +419,5 @@ def profile_image( request, usr, img, *args, **kwargs ):
 @reqArgs( sess_req=[('usr', dict)],
           )
 def alert_count( request, usr, *args, **kwargs ):
-    # Friendship requests
-    friend_requests = FriendshipModifier.objects.filter(target_id=usr['id'], modifier=FriendshipModifier.MODIFIER_FRIEND_REQUEST).count()
-
-    return jsonResponse( request, { "friend_requests": friend_requests })
+    return jsonResponse( request, { "count": 0 })
 

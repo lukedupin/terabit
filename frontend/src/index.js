@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from "./search";
 import FilterBy from "./filter_by";
-import fetch_js from './util'
+import Util from './util'
+import distance from './geo'
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl-unminified.js';
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
@@ -21,6 +22,10 @@ class Map extends React.PureComponent {
 
         this.mapContainer = React.createRef();
         this.handleFilter = this.handleFilter.bind(this);
+
+        this.timerId = -1
+        this.update_view = false
+        this.new_view = false
     }
 
     componentDidMount() {
@@ -34,21 +39,46 @@ class Map extends React.PureComponent {
 
         this.map.on('move', () => {
             this.setState( {
-                lng: map.getCenter().lng.toFixed(4),
-                lat: map.getCenter().lat.toFixed(4),
-                zoom: map.getZoom().toFixed(2)
+                lng: this.map.getCenter().lng,
+                lat: this.map.getCenter().lat,
+                zoom: this.map.getZoom()
             });
         });
+
+        this.timerId = setInterval(this.updateView.bind(this), 350);
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.timerId);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("Re-run search")
+        this.new_view = true
+        this.update_view = true
+    }
 
+    updateView() {
+        //All of this ensure we don't double up on requests
+        if ( !this.update_view ) {
+            return
+        }
+        if ( this.new_view ) {
+            this.new_view = false
+            return
+        }
+        this.update_view = false
+
+        //Run my view update
+        const sw = this.map.getBounds()._sw;
         const { lat, lng, zoom } = this.state;
-        Util.fetch_js('/terrain/list/', { lat, lng, zoom})
-            .then( resp => resp.toJson() )
-            .this( js => {
-                console.log("Load squares")
+        const radius = distance( lat, lng, sw.lat, sw.lng );
+        Util.fetch_js('/land/search_proximity/', { lat, lng, radius })
+            .then( js => {
+                Util.response(js, () => {
+                    for ( let i = 0; i < js.lands.length; i++) {
+                        console.log( js.lands[i].name )
+                    }
+                })
             })
     }
 

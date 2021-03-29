@@ -10,7 +10,7 @@ import json, datetime, time, re, pytz, uuid
 
 
 @csrf_exempt
-@reqArgs(sess_req=[('usr', dict)],
+@reqArgs(sess_opt=[('usr', dict)],
          post_req=[
              ('lat', float),
              ('lng', float),
