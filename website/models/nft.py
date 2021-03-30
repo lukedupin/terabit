@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 
+from website.models.human import Human
 from website.models.land import Land
 
 from website.helpers import util
@@ -11,7 +12,8 @@ import math, uuid
 class Nft(models.Model):
     # define my models
     id                  = models.AutoField(primary_key=True)
-    land                = models.ForeignKey(Land, on_delete=models.CASCADE)
+    human               = models.ForeignKey(Human, on_delete=models.CASCADE)
+    land                = models.ForeignKey(Land, default=None, null=True, blank=True, on_delete=models.CASCADE)
 
     name                = models.CharField(max_length=64)
     uid                 = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
@@ -39,7 +41,8 @@ class Nft(models.Model):
     def toJson(self):
         return {
             'uid':          util.xstr(self.uid),
-            'land_uid':     util.xstr(self.land.uid),
+            'human_uid':    util.xstr(self.human.uid),
+            'land_uid':     util.xstr(self.land.uid) if util.xint(self.land_id) > 0 else "",
             'name':         util.xstr(self.name),
             'desc':         util.xstr(self.desc),
             'url':          util.xstr(self.url),

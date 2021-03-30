@@ -34,6 +34,7 @@ class Human(models.Model):
     email           = models.EmailField(max_length=64, unique=True)
     real_name       = models.CharField(max_length=64, help_text="Full real name")
     profile_image   = models.CharField(max_length=96, null=True, default=None, blank=True)
+    nft_count       = models.IntegerField(default=0)
 
     blocked         = models.BooleanField(default=False)
 
@@ -130,12 +131,13 @@ class Human(models.Model):
 
             'bio':              util.xstr(self.bio),
             'real_name':        util.xstr(self.real_name),
+            'nft_count':        util.xint(self.nft_count),
         }
 
     @staticmethod
     def customAdmin( idx=0 ):
         class HumanAdmin(nested_admin.NestedModelAdmin):
-            fields = ('username', 'type', 'blocked', 'bio', 'phone_number', 'email', 'real_name', 'uid', 'profile_tag')
+            fields = ('username', 'type', 'blocked', 'bio', 'phone_number', 'email', 'real_name', 'nft_count', 'uid', 'profile_tag')
             readonly_fields = ('uid', 'session', 'username_unique', 'profile_tag')
             search_fields = ('username', 'real_name', 'email', 'phone_number')
 

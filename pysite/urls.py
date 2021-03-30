@@ -6,10 +6,11 @@ from website.views.api import human as api_human
 from website.views.api import land as api_land
 from website.views.api import nft as api_nft
 from website.views.api import version as api_version
+from website.admin import admin_site
+ 
+admin.autodiscover()
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
     path('land/search_proximity/', api_land.search_proximity),
 
     path('human/create/', api_human.create),
@@ -33,4 +34,5 @@ urlpatterns = [
     path('version/current/', api_version.current),
 
     path('', TemplateView.as_view(template_name='index.html')),
+    path('admin/', admin_site.urls),
 ]

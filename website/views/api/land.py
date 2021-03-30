@@ -18,12 +18,14 @@ import json, datetime, time, re, pytz, uuid
          ],
          )
 def search_proximity( request, usr, lat, lng, radius, *args, **kwargs ):
-    if radius > 30000:
-        return errResponse( request, "Search area too large" )
+    #if radius > 30000: return errResponse( request, "Search area too large" )
+    if radius < 5000:
+        radius = 5000
 
     # Get all land, note, this method might might give you answers that are outside the radius
     box = geo.GeoBox.box( lat, lng, radius )
-    lands = [x.toJson() for x in Land.objects.filter(lng__range=(box.Left, box.Right),
-                                                     lat__range=(box.Bottom, box.Top))]
+    lands = [x.toJson() for x in Land.objects.filter( lng__range=(box.Left, box.Right),
+                                                      lat__range=(box.Bottom, box.Top))
+                                             .select_related('human')]
 
     return jsonResponse( request, { 'lands': lands })

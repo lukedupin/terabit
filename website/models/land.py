@@ -9,21 +9,21 @@ import math, uuid
 
 
 class Land(models.Model):
-    STATUS_UNCLAIMED    = 1
+    STATUS_UNMINTED     = 1
     STATUS_CLAIMED      = 2
     STATUS_FOR_SALE     = 3
     STATUS_CHOICES = (
-        (STATUS_UNCLAIMED, 1),
-        (STATUS_CLAIMED, 2),
-        (STATUS_FOR_SALE, 3),
+        (STATUS_UNMINTED,   "Unminted"),
+        (STATUS_CLAIMED,    "Claimed"),
+        (STATUS_FOR_SALE,   "For sale"),
     )
-    DEFAULT_STATUS = STATUS_UNCLAIMED
+    DEFAULT_STATUS = STATUS_UNMINTED
 
     # define my models
     id                  = models.AutoField(primary_key=True)
     human               = models.ForeignKey(Human, on_delete=models.CASCADE)
 
-    name                = models.CharField(max_length=64)
+    name                = models.CharField(max_length=64, default="", blank=True)
     uid                 = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
     desc                = models.TextField(null=True, default="", blank=True)
 
@@ -61,7 +61,7 @@ class Land(models.Model):
             'lng':      util.xfloat(self.lng),
             'elv':      util.xfloat(self.elv),
             'status':   self.get_status_display(),
-            'nft_count': util.xint(self.nft_count),
+            'nft_count': util.xint(self.nft_count) + util.xint(self.human.nft_count),
             'updated_on': util.timeToUnix(self.updated_on),
             'created_on': util.timeToUnix(self.created_on),
         }
@@ -69,6 +69,6 @@ class Land(models.Model):
     @staticmethod
     def customAdmin( idx=0 ):
         class LandAdmin(admin.ModelAdmin):
-            pass
+            list_display = ('name', 'lat', 'lng', 'status')
 
         return ( LandAdmin, None )[idx]
