@@ -2,11 +2,6 @@ import datetime, calendar, math, zipfile, os, re, pytz, smtplib, pickle, pytz, b
 from django.conf import settings
 from django.utils.timezone import utc
 
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from google.auth.exceptions import RefreshError
-
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -54,56 +49,6 @@ def sendEmail( to_email, subject, body ):
         return None
 
     return response
-
-def sendGmail( recipient, sender, subject, body ):
-    scopes = ['https://www.googleapis.com/auth/gmail.send']
-    pickle_filename = settings.BASE_DIR +'/pysite/gmail_token.pickle'
-    secret_filename = settings.BASE_DIR +'/pysite/gmail_secret.json'
-
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    creds = None
-    if os.path.exists(pickle_filename):
-        with open( pickle_filename, 'rb') as token:
-            creds = pickle.load(token)
-
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        request_token = True
-        if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-                request_token = False
-            except RefreshError:
-                print("Refresh error")
-
-        # Request a new token
-        if request_token:
-            flow = InstalledAppFlow.from_client_secrets_file( secret_filename, scopes)
-            creds = flow.run_local_server(port=0)
-
-        # Save the credentials for the next run
-        with open(pickle_filename, 'wb') as token:
-            pickle.dump(creds, token)
-
-    # Create my service
-    service = build('gmail', 'v1', credentials=creds)
-
-    # Create my simple mime type
-    message = MIMEText(body)
-    message['to'] = recipient
-    message['from'] = sender
-    message['subject'] = subject
-
-    # Base 64 encode
-    b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
-    b64_string = b64_bytes.decode()
-    gmail_msg = {'raw': b64_string}
-
-    # Send out the message
-    result = (service.users().messages().send(userId='me', body=gmail_msg).execute())
-    return True
 
 
 def xlist( ary ):
