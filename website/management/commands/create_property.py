@@ -15,6 +15,7 @@ class Command(BaseCommand):
 
         lat = 37.7749
         lng = -122.4194
+        status = 0
 
         for x in range(20):
             dlng = lng
@@ -23,7 +24,9 @@ class Command(BaseCommand):
                     human=human,
                     lat=lat,
                     lng=dlng,
+                    status=status + 1
                 )
+                status = (status + 1) % 3
                 dlng = geo.distanceBearing(lat, dlng, 1000, 90)[1]
 
             lat, lng = geo.distanceBearing(lat, lng, 1000, 0)
