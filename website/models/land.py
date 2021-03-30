@@ -69,6 +69,6 @@ class Land(models.Model):
     @staticmethod
     def customAdmin( idx=0 ):
         class LandAdmin(admin.ModelAdmin):
-            list_display = ('name', 'lat', 'lng', 'status')
+            list_display = ('status', 'lat', 'lng', 'name')
 
         return ( LandAdmin, None )[idx]
