@@ -4,10 +4,8 @@ The TERABIT README
 
 # Installation
 
-sudo apt install python3-memcached
+sudo apt install python3-memcached python3-pip python3-django yarn nodjs npm
 
-sudo pip3 install psycopg2
-sudo pip3 install psycopg2-binary
 sudo pip3 install pillow
 sudo pip3 install boto3
 sudo pip3 install tzwhere
