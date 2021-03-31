@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from "./search";
+import Header from "./header";
+import Sidebar from "./sidebar";
 import FilterBy from "./filter_by";
 import Util from './helpers/util'
 import Geo from './helpers/geo'
@@ -28,12 +30,15 @@ class Map extends React.PureComponent {
         this.update_view = false;
         this.new_view = false;
 
+        this.state = {
+            humans: {}
+        };
+
         this.map_state = {
             empty: [],
             claimed: [],
             for_sale: [],
             unminted: [],
-            humans: {},
 
             lat: 37.7749,
             lng: -122.4194,
@@ -317,9 +322,11 @@ class Map extends React.PureComponent {
                     this.map_state.claimed = claimed;
                     this.map_state.for_sale = for_sale;
                     this.map_state.unminted = unminted;
-                    this.humans = humans;
 
                     this.updateTileSet(this.map_state.empty, this.map_state.claimed, this.map_state.for_sale, this.map_state.unminted, this.map_state.filter );
+
+                    //Cause a state update which will update the side bar
+                    this.setState({ humans })
                 })
             })
     }
@@ -375,12 +382,16 @@ class Map extends React.PureComponent {
     render() {
         //const { lng, lat, zoom } = this.map_state;
         //<Search />
+        const { humans } = this.state;
+
         return (
             <div>
+                <Header />
                 <FilterBy
                     onChange={this.handleFilter}
                 />
                 <div ref={this.mapContainer} className="map-container" />
+                <Sidebar humans={humans} />
             </div>
         );
     }
