@@ -55,11 +55,14 @@ class Map extends React.PureComponent {
         });
 
         this.map.on('move', () => {
-            this.setState( {
+            this.map_state = {
                 lng: this.map.getCenter().lng,
                 lat: this.map.getCenter().lat,
-                zoom: this.map.getZoom()
-            });
+                zoom: this.map.getZoom(),
+            };
+
+            this.new_view = true;
+            this.update_view = true;
         });
 
         var geocoder = new MapboxGeocoder({
@@ -211,17 +214,12 @@ class Map extends React.PureComponent {
 
             //This has to be after the first render
             this.updateView();
-            this.timerId = setInterval(this.updateViewStatefulCheck.bind(this), 350);
+            this.timerId = setInterval(this.updateViewStatefulCheck.bind(this), 150);
         });
     }
 
     componentWillUnmount(){
         clearInterval(this.timerId);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.new_view = true;
-        this.update_view = true;
     }
 
     popupHtml( prop ) {
