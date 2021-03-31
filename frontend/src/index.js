@@ -33,6 +33,7 @@ class Map extends React.PureComponent {
             claimed: [],
             for_sale: [],
             unminted: [],
+            humans: {},
 
             lat: 37.7749,
             lng: -122.4194,
@@ -55,17 +56,15 @@ class Map extends React.PureComponent {
         });
 
         this.map.on('move', () => {
-            this.map_state = {
-                lng: this.map.getCenter().lng,
-                lat: this.map.getCenter().lat,
-                zoom: this.map.getZoom(),
-            };
+            this.map_state['lat'] = this.map.getCenter().lat;
+            this.map_state['lng'] = this.map.getCenter().lng;
+            this.map_state['zoom'] = this.map.getCenter().zoom;
 
             this.new_view = true;
             this.update_view = true;
         });
 
-        var geocoder = new MapboxGeocoder({
+        let geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
             marker: false,
@@ -170,7 +169,7 @@ class Map extends React.PureComponent {
 
                 new mapboxgl.Popup()
                     .setLngLat(e.lngLat)
-                    .setHTML(this.popupHtml( e.features[0].properties.status) )
+                    .setHTML(Map.popupHtml( prop) )
                     .addTo(map);
             });
             map.on('mouseenter', 'empty-poly', function () {
@@ -186,7 +185,7 @@ class Map extends React.PureComponent {
 
                 new mapboxgl.Popup()
                     .setLngLat(e.lngLat)
-                    .setHTML(this.popupHtml( prop ) )
+                    .setHTML(Map.popupHtml( prop ) )
                     .addTo(map);
             });
             map.on('mouseenter', 'claimed-poly', function () {
@@ -202,7 +201,7 @@ class Map extends React.PureComponent {
 
                 new mapboxgl.Popup()
                     .setLngLat(e.lngLat)
-                    .setHTML(e.features[0].properties.status)
+                    .setHTML( Map.popupHtml(prop) )
                     .addTo(map);
             });
             map.on('mouseenter', 'for-sale-poly', function () {
@@ -222,8 +221,12 @@ class Map extends React.PureComponent {
         clearInterval(this.timerId);
     }
 
-    popupHtml( prop ) {
-        return prop.name;
+    static popupHtml( prop ) {
+        return '<div>'+
+                '<img src="'+ prop.profile_image +'" /> ' +
+                '<div>'+ prop.username +'</div>' +
+                '<div>'+ prop.name +'</div>'+
+            '</div>';
     }
 
     updateViewStatefulCheck() {
@@ -254,16 +257,38 @@ class Map extends React.PureComponent {
                     let claimed = [];
                     let for_sale = [];
                     let unminted = [];
+
+                    //Load up the humans
+                    let humans = {};
+                    for ( let i = 0; i < js.humans.length; i++) {
+                        humans[js.humans[i].uid] = js.humans[i];
+                    }
+
+                    //Load the lands
                     for ( let i = 0; i < js.lands.length; i++) {
                         const land = js.lands[i];
 
                         const status = land.status.toLowerCase();
                         const coords = Geo.boxCorners( land.lat, land.lng, 500 )
 
+                        //Setup my prop, if there is a human associated, then add them to
+                        let prop = {
+                            ...land,
+                            profile_image: '',
+                            username: 'Available',
+                        };
+                        if ( land.human_uid in humans ) {
+                            const human = humans[land.human_uid];
+
+                            prop.profile_image = human.profile_image;
+                            prop.username = human.username;
+                            prop.nft_count += human.nft_count;
+                        }
+
                         //Add the feature
                         const obj = {
                             type: "Feature",
-                            properties: land,
+                            properties: prop,
                             geometry: {
                                 type: (land.status != 'unminted')? "Polygon": "LineString",
                                 coordinates: (land.status != 'unminted')? [coords]: coords,
@@ -287,10 +312,12 @@ class Map extends React.PureComponent {
                         }
                     }
 
+                    //Store my data
                     this.map_state.empty = empty;
                     this.map_state.claimed = claimed;
                     this.map_state.for_sale = for_sale;
                     this.map_state.unminted = unminted;
+                    this.humans = humans;
 
                     this.updateTileSet(this.map_state.empty, this.map_state.claimed, this.map_state.for_sale, this.map_state.unminted, this.map_state.filter );
                 })

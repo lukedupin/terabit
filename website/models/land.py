@@ -61,7 +61,7 @@ class Land(models.Model):
             'lng':      util.xfloat(self.lng),
             'elv':      util.xfloat(self.elv),
             'status':   self.get_status_display(),
-            'nft_count': util.xint(self.nft_count) + util.xint(self.human.nft_count),
+            'nft_count': util.xint(self.nft_count),
             'updated_on': util.timeToUnix(self.updated_on),
             'created_on': util.timeToUnix(self.created_on),
         }

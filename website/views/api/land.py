@@ -24,8 +24,16 @@ def search_proximity( request, usr, lat, lng, radius, *args, **kwargs ):
 
     # Get all land, note, this method might might give you answers that are outside the radius
     box = geo.GeoBox.box( lat, lng, radius )
-    lands = [x.toJson() for x in Land.objects.filter( lng__range=(box.Left, box.Right),
-                                                      lat__range=(box.Bottom, box.Top))
-                                             .select_related('human')]
+    lookup = {}
+    lands = []
+    for x in Land.objects.filter( lng__range=(box.Left, box.Right),
+                                  lat__range=(box.Bottom, box.Top)).select_related('human'):
+        js = x.toJson()
+        js['human_uid'] = util.xstr(x.human.uid)
+        lands.append(js)
 
-    return jsonResponse( request, { 'lands': lands })
+        lookup[int(x.human_id)] = x.human
+
+    humans = [lookup[x].toJson() for x in lookup.keys()]
+
+    return jsonResponse( request, { 'lands': lands, 'humans': humans })
