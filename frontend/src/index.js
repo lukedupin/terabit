@@ -226,14 +226,6 @@ class Map extends React.PureComponent {
         clearInterval(this.timerId);
     }
 
-    static popupHtml( prop ) {
-        return '<div>'+
-                '<img src="'+ prop.profile_image +'" /> ' +
-                '<div>'+ prop.username +'</div>' +
-                '<div>'+ prop.name +'</div>'+
-            '</div>';
-    }
-
     updateViewStatefulCheck() {
         //All of this ensure we don't double up on requests
         if (!this.update_view) {
@@ -379,6 +371,14 @@ class Map extends React.PureComponent {
         });
     }
 
+    static popupHtml( prop ) {
+        return '<div class="user-popup-details user_activity active">' +
+            '<img src="'+ prop.profile_image +'" /> ' +
+            '<div>'+ prop.username +'</div>' +
+            '<div>'+ prop.name +'</div>'+
+            '</div>';
+    }
+
     render() {
         //const { lng, lat, zoom } = this.map_state;
         //<Search />
@@ -387,13 +387,26 @@ class Map extends React.PureComponent {
         return (
             <div>
                 <Header />
-                <FilterBy
-                    onChange={this.handleFilter}
-                />
-                <div ref={this.mapContainer} className="map-container" />
-                <Sidebar humans={humans} />
+
+                <section className="app-body">
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-9">
+                                <div ref={this.mapContainer} className="map-grid"/>
+
+                                <div className="map-grid-head">
+                                    <div className="d-flex justify-content-between">
+                                        <FilterBy onChange={this.handleFilter}/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <Sidebar humans={humans} />
+                        </div>
+                    </div>
+                </section>
             </div>
-        );
+    );
     }
 }
 

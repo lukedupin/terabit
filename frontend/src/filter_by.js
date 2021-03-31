@@ -5,6 +5,7 @@ class Checkbox extends  React.Component {
         super(props);
         this.state = {
             checked: true,
+            klass: "",
             label: props.label,
             tab_idx: props.tab_idx,
         };
@@ -19,18 +20,12 @@ class Checkbox extends  React.Component {
     }
 
     render() {
-        const { checked, label, tab_idx } = this.state;
+        const { checked, klass, label, tab_idx } = this.state;
         return (
-            <div className="ui checkbox">
-                <input
-                    type="checkbox"
-                    className="hidden"
-                    readOnly=""
-                    checked={checked}
-                    onChange={this.handleToggle}
-                    tabIndex={tab_idx}/>
-                <label onClick={this.handleToggle}>{label}</label>
-            </div>
+            <label className={klass} onClick={this.handleToggle}>{label}
+                <input type="checkbox" checked={checked} onChange={this.handleToggle} tabIndex={tab_idx}/>
+                <span className="checkmark"></span>
+            </label>
         );
     }
 }
@@ -73,10 +68,21 @@ export default class FilterBy extends React.Component {
         const { for_sale, claimed, empty } = this.state;
 
         return (
-            <div className="filter_by">
-                <Checkbox onChange={this.handleChange} label="For sale" tab_idx="0" />
-                <Checkbox onChange={this.handleChange} label="Claimed" tab_idx="1" />
-                <Checkbox onChange={this.handleChange} label="Empty" tab_idx="2" />
+            <div class="map-grid-filter">
+                <ul>
+                    <li>
+                        <Checkbox onChange={this.handleChange} klass="check_item check_item_1" label="For sale" tab_idx="0" />
+                    </li>
+                    <li>
+                        <Checkbox onChange={this.handleChange} klass="check_item check_item_2" label="Claimed" tab_idx="1" />
+                    </li>
+                    <li>
+                        <Checkbox onChange={this.handleChange} klass="check_item check_item_3" label="Empty" tab_idx="2" />
+                    </li>
+                    <li>
+                        <Checkbox onChange={this.handleChange} klass="check_item check_item_4" label="A thing" tab_idx="3" />
+                    </li>
+                </ul>
             </div>
         );
     }

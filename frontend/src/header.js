@@ -9,22 +9,43 @@ export default class Header extends React.Component {
         super(props);
         this.state = {
         };
-
-        this.linkAccount = this.linkAccount.bind(this);
-    }
-
-    linkAccount() {
-        console.log("Link account");
     }
 
     render() {
         return (
-            <div className="header-container">
-                <Container>
-                    <Button onClick={this.linkAccount}>Link Account</Button>
-                    <div>Text for other stuff</div>
-                </Container>
-            </div>
+            <header className="site_header">
+                <nav className="navbar navbar-expand-lg">
+                    <a className="navbar-brand logo_txt" href="#">Terabit</a>
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                            <li className="nav-item active">
+                                <a className="nav-link" href="index.html">View Properties</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">How to Buy</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">Contact</a>
+                            </li>
+                        </ul>
+                        <ul className="navbar-nav ml-auto">
+                            <li className="nav-item pr-0">
+                                <a className="btn btn-ghost" href="profile.html">My Profile</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
         );
     }
 }
