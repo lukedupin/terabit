@@ -1,0 +1,461 @@
+/* ---___--- IMPORT FONTS ---___--- */
+
+@font-face {
+	font-family: 'TTLakesNeue';
+	font-style: normal;
+	font-weight: 400;
+	src: url(../fonts/TT-Lakes-Neue/TT-Lakes-Neue-Regular.ttf);
+}
+@font-face {
+	font-family: 'TTLakesNeue';
+	font-style: normal;
+	font-weight: 700;
+	src: url(../fonts/TT-Lakes-Neue/TT-Lakes-Neue-Bold.ttf);
+}
+
+/* ---___--- HTML Basics ---___--- */
+img {
+	max-width:100%;
+	display:inline-block;
+}
+body {
+	font-family: 'TTLakesNeue';
+	font-weight: 400;
+}
+h1, h2, h3, h4, h5, h6, p{
+	margin:0px;
+	padding:0px;
+	font-weight: normal;
+	line-height: 100%;
+}
+p{
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* ---___--- NAV BAR ---___--- */
+
+.site_header{
+	border-bottom: 1px solid #e5e5e5;
+}
+.logo_txt{
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: 3.33px;
+	color: #107869;
+	text-transform: uppercase;
+	margin-right: 40px;
+}
+.logo_txt:hover{
+	color: #107869;
+}
+.site_header .navbar-nav .nav-item {
+	padding: 0px 15px;
+}
+.site_header .navbar-nav .nav-link {
+	font-size: 14px;
+	color: #000000;
+	padding: 0px;
+	position: relative;
+	transition: 0.4s;
+}
+.site_header .navbar-nav .nav-link:hover{
+	color: #107869;
+	transition: 0.4s;
+}
+.active a{
+	color: #107869 !important;
+}
+.active a:before{
+	content: "";
+	position: absolute;
+	bottom: -18px;
+	left: 0px;
+	width: 20px;
+	height: 2px;
+	background-color: #107869;
+}
+
+/* ---___--- LINKING ---___--- */
+
+a{
+	color: #000;
+}
+a:hover, a:focus{
+	text-decoration:underline;
+	color: #000;
+}
+a.link-color {
+	color: #107869;
+}
+.btn{
+	border-radius: 3px;
+  border: solid 1px #107869;
+	height: 40px;
+	padding: 10px 20px;
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: 2.4px;
+	text-transform: uppercase;
+	color: #fff;
+	background: #107869;
+	text-align: center;
+	transition: 0.4s;
+}
+.btn-ghost{
+	border-radius: 3px;
+  border: solid 1px #107869;
+	height: 40px;
+	padding: 10px 20px;
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: 2.4px;
+	text-transform: uppercase;
+	color: #107869;
+	background: #fff;
+	text-align: center;
+	transition: 0.4s;
+}
+
+.btn:hover, .btn-ghost:hover{
+	color: #fff;
+	background: #107869;
+	transition: 0.4s;
+	border: solid 1px #fff;
+	border-radius: 37px;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.33);
+}
+
+/* ---___--- APP BODY ---___--- */
+
+.app-body{
+	padding: 20px 0;
+}
+
+/* ---___--- MAP GRID ---___--- */
+
+.map-grid{
+	border-radius: 3px;
+	border: solid 1px #e5e5e5;
+	background-color: #f2f2f2;
+	height: calc(100vh - 100px);
+	position: relative;
+	padding: 10px;
+}
+.map-grid-head{}
+
+/* Map Search */
+.map-grid-search{
+	position: relative;
+}
+.map-grid-search:before{
+	content: "\f002";
+	font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+	position: absolute;
+	top: 14px;
+	left: 21px;
+	font-size: 10px;
+	color: #000;
+	z-index: 10;
+}
+.map-grid-search input{
+	width: 320px;
+	height: 40px;
+	padding-left: 40px;
+	border-radius: 3px;
+	font-size: 12px;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+	background-color: rgba(255, 255, 255, 0.9);
+}
+.map-grid-search input::-webkit-input-placeholder {
+	color: #000000;
+}
+.map-grid-search input:-ms-input-placeholder {
+	color: #000000;
+}
+.map-grid-search input::placeholder {
+	color: #000000;
+}
+
+/* Map Filter */
+.map-grid-filter{
+	border-radius: 3px;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+	background-color: rgba(255, 255, 255, 0.9);
+	padding: 0px 15px 10px;
+}
+.map-grid-filter ul{
+	margin: 0;
+	padding: 0;
+}
+.map-grid-filter ul li{
+	list-style-type: none;
+	display: inline-block;
+	padding: 10px 5px 0px;
+}
+.check_item {
+	display: block;
+	position: relative;
+	padding-left: 22px;
+	cursor: pointer;
+	font-size: 12px;
+	color: #000000;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	margin-bottom: 0px;
+}
+.check_item input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+.checkmark {
+	position: absolute;
+	top: 2px;
+	left: 0;
+	height: 15px;
+	width: 15px;
+	background-color: #fff;
+	border-radius: 3px;
+}
+.check_item_1 .checkmark{
+	border: solid 1px #000000;
+}
+.check_item_2 .checkmark{
+	border: solid 1px #5cd85a;
+}
+.check_item_3 .checkmark{
+	border: solid 1px #723502;
+}
+.check_item_4 .checkmark{
+	border: solid 1px #f2d54c;
+}
+.check_item:hover input ~ .checkmark {
+	background-color: #ccc;
+}
+.check_item input:checked ~ .checkmark {
+	background-color: #000000;
+}
+
+.check_item_1 input:checked ~ .checkmark{
+	background-color: #000000;
+}
+.check_item_2 input:checked ~ .checkmark{
+	background-color: #5cd85a;
+}
+.check_item_3 input:checked ~ .checkmark{
+	background-color: #723502;
+}
+.check_item_4 input:checked ~ .checkmark{
+	background-color: #f2d54c;
+}
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+.check_item input:checked ~ .checkmark:after {
+	display: block;
+}
+.check_item .checkmark:after {
+	left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* User Box */
+.map-grid-user-popup{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	min-width: 173px;
+	border-radius: 3px;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+	border: solid 1px #e5e5e5;
+	background-color: rgba(255, 255, 255, 0.9);
+	padding: 10px;
+}
+
+.user-popup-details{
+	position: relative;
+	padding-left: 36px;
+}
+.user-popup-details img{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+.user-popup-details h4{
+	font-size: 14px;
+	font-weight: bold;
+	color: #000000;
+	line-height: 16px;
+}
+.user-popup-details p{
+	font-size: 10px;
+	color: #000000;
+	line-height: 14px;
+}
+.user_activity:before{
+	content: "";
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background: #e5e5e5;
+	border: solid 2px #ffffff;
+	z-index: 50;
+}
+.user_activity.active:before{
+	background: #5cd85a;
+}
+.map-grid-user-popup .user_activity:before{
+	width: 10px;
+	height: 10px;
+}
+
+.map-listings{
+	height: 100%;
+	border-radius: 3px;
+	border: solid 1px #e5e5e5;
+	background-color: #ffffff;
+	height: calc(100vh - 100px);
+	overflow: scroll;
+}
+.map-listing{
+	border-bottom: 1px solid #E5E5E5;
+	margin: 10px;
+	padding: 10px 10px 20px;
+}
+.map-listing-head{
+	clear: both;
+}
+img.map-listing-profile{
+	width: 50px;
+	height: 50px;
+	border-radius: 25px;
+	float: left;
+}
+.map-listing-profile-deets{
+	width: auto;
+	float: left;
+	margin: 5px 10px 0;
+}
+.map-listing-profile-deets a.user-name{
+	font-size: 16px;
+	font-weight: 700;
+}
+.map-listing-profile-deets .user-byline{
+
+}
+.map-listing-cta{
+	width: auto;
+	float: right;
+}
+.map-listing-body{
+}
+.map-listing-item{
+
+}
+.map-listing-image{
+	border-radius: 5px;
+	width: 100%;
+	height: auto;
+	margin: 10px 0;
+}
+.location-latlong{
+	margin: 10px 0 10px;
+	font-size: 18px;
+}
+.tokens-header{
+	font-weight: 700;
+	margin: 20px 0 0;
+}
+.token-title{
+	font-size: 18px;
+	margin: 10px 0 5px;
+}
+.token-desc{
+	font-size: 12px;
+}
+
+/* ---___--- USER PROFILE ---___--- */
+
+.myprofile{
+	text-align: center;
+	padding: 20px;
+}
+.myprofile-image{
+	border-radius: 500px;
+}
+.myprofile .btn{
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+}
+.myprofile-name{
+	font-weight: 900;
+	font-size: 21px;
+	margin: 30px auto;
+}
+.myprofile hr{
+	width: 30px;
+	border-top: 2px solid #000;
+	margin-top: 20px;
+}
+.myprofile-bio{
+	padding: 10px 20px 20px;
+}
+
+.nft-card{
+	border-radius: 3px;
+	border: solid 1px #e5e5e5;
+	background-color: #ffffff;
+	width: 30%;
+	margin: 20px 1.5% 30px;
+}
+.nft-card-image {
+	border-radius: 3px 3px 0 0;
+}
+.nft-name{
+	font-size: 18px;
+	margin: 20px 20px 10px 20px;
+}
+.nft-desc{
+	margin: 0px 20px 20px;
+}
+
+/* ---___--- RESPONSIVE ---___--- */
+
+@media (max-width: 992px) {
+	.map-grid{
+		height: 400px;
+	}
+	.map-listings{
+		overflow: auto;
+	}
+
+
+}
+
+
+/*************end*************/
