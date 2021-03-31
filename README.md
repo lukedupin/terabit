@@ -6,7 +6,6 @@ The TERABIT README
 
 sudo apt install python3-memcached python3-pip python3-django yarn nodjs npm
 
-sudo pip3 install pillow
 sudo pip3 install boto3
 sudo pip3 install tzwhere
 sudo pip3 install pyfcm 

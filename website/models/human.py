@@ -125,7 +125,7 @@ class Human(models.Model):
     def toJson(self):
         return {
             'uid':              util.xstr(self.uid),
-            'profile_image':    self.getProfileUrl(),
+            'profile_image':    util.xstr(self.profile_image), #S3 self.getProfileUrl(),
             'type':             self.get_type_display(),
             'username':         util.xstr(self.username),
 
@@ -137,7 +137,7 @@ class Human(models.Model):
     @staticmethod
     def customAdmin( idx=0 ):
         class HumanAdmin(nested_admin.NestedModelAdmin):
-            fields = ('username', 'type', 'blocked', 'bio', 'phone_number', 'email', 'real_name', 'nft_count', 'uid', 'profile_tag')
+            fields = ('username', 'type', 'blocked', 'bio', 'phone_number', 'email', 'real_name', 'nft_count', 'uid', 'profile_image', 'profile_tag')
             readonly_fields = ('uid', 'session', 'username_unique', 'profile_tag')
             search_fields = ('username', 'real_name', 'email', 'phone_number')
 

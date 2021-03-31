@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Search from "./search";
-import FilterBy from "./filter_by";
-import Util from './util'
-import Geo from './geo'
+import Util from './helpers/util';
+import Geo from './helpers/geo';
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl-unminified.js';
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
@@ -11,23 +8,18 @@ import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
 mapboxgl.workerClass = MapboxWorker;
 mapboxgl.accessToken = 'pk.eyJ1IjoidGVyYWJpdCIsImEiOiJja21zMnpkaXMwZGdqMm5teDdpNWN1ZHVkIn0.mIPDv8iZ1mMEq51n6jt10g';
 
-class Map extends React.PureComponent {
+export default class MyMap extends React.PureComponent {
     constructor(props) {
         super(props);
+
         this.state = {
             lat: 37.7749,
             lng: -122.4194,
-            zoom: 9,
-            filter: {
-                for_sale: true,
-                claimed: true,
-                empty: true,
-            },
         };
 
         this.updateTileSet = this.updateTileSet.bind(this);
         this.updateView = this.updateView.bind(this);
-        this.handleFilter = this.handleFilter.bind(this);
+        this.updateViewStatefulCheck = this.updateViewStatefulCheck.bind(this);
 
         this.mapContainer = React.createRef();
 
@@ -44,19 +36,18 @@ class Map extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { lng, lat, zoom } = this.state;
+        const { lng, lat } = this.state;
         this.map = new mapboxgl.Map({
             container: this.mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [lng, lat],
-            zoom: zoom
+            zoom: 9
         });
 
         this.map.on('move', () => {
             this.setState( {
                 lng: this.map.getCenter().lng,
                 lat: this.map.getCenter().lat,
-                zoom: this.map.getZoom()
             });
         });
 
@@ -148,7 +139,7 @@ class Map extends React.PureComponent {
 
                 new mapboxgl.Popup()
                     .setLngLat(e.lngLat)
-                    .setHTML(this.popupHtml( e.features[0].properties.status) )
+                    .setHTML(e.features[0].properties.status)
                     .addTo(map);
             });
             map.on('mouseenter', 'empty-poly', function () {
@@ -164,7 +155,7 @@ class Map extends React.PureComponent {
 
                 new mapboxgl.Popup()
                     .setLngLat(e.lngLat)
-                    .setHTML(this.popupHtml( prop ) )
+                    .setHTML(prop.status)
                     .addTo(map);
             });
             map.on('mouseenter', 'claimed-poly', function () {
@@ -190,8 +181,8 @@ class Map extends React.PureComponent {
                 map.getCanvas().style.cursor = '';
             });
 
-            //This has to be after the first render
             this.updateView();
+            //This has to be after the first render
             this.timerId = setInterval(this.updateViewStatefulCheck.bind(this), 350);
         });
     }
@@ -201,15 +192,17 @@ class Map extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        this.props.onChange( this.state.lat, this.state.lng );
+
         //Did the props change?
         const keys = ['for_sale', 'claimed', 'empty'];
         for ( let i = 0; i < keys.length; i++ ) {
             if ( prevProps[keys[i]] != this.props[keys[i]] ) {
                 this.updateTileSet( this.tile_data.empty,
-                    this.tile_data.claimed,
-                    this.tile_data.for_sale,
-                    this.tile_data.unminted,
-                    this.props.filter );
+                                    this.tile_data.claimed,
+                                    this.tile_data.for_sale,
+                                    this.tile_data.unminted,
+                                    this.props.filter );
                 return;
             }
         }
@@ -217,10 +210,6 @@ class Map extends React.PureComponent {
         //We are scrolling around and need to allow the stateful check to work
         this.new_view = true;
         this.update_view = true;
-    }
-
-    popupHtml( prop ) {
-        return prop.name;
     }
 
     updateViewStatefulCheck() {
@@ -239,11 +228,11 @@ class Map extends React.PureComponent {
     }
 
     updateView() {
+        //Run my view update
         const sw = this.map.getBounds()._sw;
-        const { lat, lng, zoom } = this.state;
-        const radius = Geo.distance( lat, lng, sw.lat, sw.lng );
+        const { lat, lng } = this.state;
 
-        //Query tiles
+        const radius = Geo.distance( lat, lng, sw.lat, sw.lng );
         Util.fetch_js('/land/search_proximity/', { lat, lng, radius })
             .then( js => {
                 Util.response(js, () => {
@@ -284,12 +273,19 @@ class Map extends React.PureComponent {
                         }
                     }
 
+                    //Store to stateful so we can change on the go
                     this.tile_data.empty = empty;
                     this.tile_data.claimed = claimed;
                     this.tile_data.for_sale = for_sale;
                     this.tile_data.unminted = unminted;
 
-                    this.updateTileSet(this.tile_data.empty, this.tile_data.claimed, this.tile_data.for_sale, this.tile_data.unminted, this.props.filter );
+                    //Update the tileset
+                    this.updateTileSet(
+                        this.tile_data.empty,
+                        this.tile_data.claimed,
+                        this.tile_data.for_sale,
+                        this.tile_data.unminted,
+                        this.props.filter );
                 })
             })
     }
@@ -318,34 +314,10 @@ class Map extends React.PureComponent {
         })
     }
 
-    handleFilter( js ) {
-        this.updateTileSet(this.tile_data.empty, this.tile_data.claimed, this.tile_data.for_sale, this.tile_data.unminted, this.props.filter );
-    }
-
-    handleSearch( js ) {
-        map.flyTo({
-            center: [ js.lng, js.lat ],
-            essential: true
-        });
-
-        this.setState({
-            lat: js.lat,
-            lng: js.lng,
-        });
-    }
-
     render() {
         //const { lng, lat, zoom } = this.state;
         return (
-            <div>
-                <Search />
-                <FilterBy
-                    onChange={this.handleFilter}
-                />
-                <div ref={this.mapContainer} className="map-container" />
-            </div>
+            <div ref={this.mapContainer} className="map-container" />
         );
     }
 }
-
-ReactDOM.render(<Map />, document.getElementById('app'));
