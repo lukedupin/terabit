@@ -1,5 +1,5 @@
 import React from 'react';
-import Util from './util';
+import Util from './helpers/util';
 
 export default class Search extends React.Component {
     constructor(props) {

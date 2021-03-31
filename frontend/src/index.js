@@ -2,11 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Search from "./search";
 import FilterBy from "./filter_by";
-import Util from './util'
-import Geo from './geo'
+import Util from './helpers/util'
+import Geo from './helpers/geo'
 
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl-unminified.js';
 import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
+
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+//import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 mapboxgl.workerClass = MapboxWorker;
 mapboxgl.accessToken = 'pk.eyJ1IjoidGVyYWJpdCIsImEiOiJja21zMnpkaXMwZGdqMm5teDdpNWN1ZHVkIn0.mIPDv8iZ1mMEq51n6jt10g';
@@ -14,16 +17,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoidGVyYWJpdCIsImEiOiJja21zMnpkaXMwZGdqMm5teDdpN
 class Map extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.state = {
-            lat: 37.7749,
-            lng: -122.4194,
-            zoom: 9,
-            filter: {
-                for_sale: true,
-                claimed: true,
-                empty: true,
-            },
-        };
 
         this.updateTileSet = this.updateTileSet.bind(this);
         this.updateView = this.updateView.bind(this);
@@ -35,16 +28,25 @@ class Map extends React.PureComponent {
         this.update_view = false;
         this.new_view = false;
 
-        this.tile_data = {
+        this.map_state = {
             empty: [],
             claimed: [],
             for_sale: [],
             unminted: [],
+
+            lat: 37.7749,
+            lng: -122.4194,
+            zoom: 9,
+            filter: {
+                for_sale: true,
+                claimed: true,
+                empty: true,
+            },
         }
     }
 
     componentDidMount() {
-        const { lng, lat, zoom } = this.state;
+        const { lng, lat, zoom } = this.map_state;
         this.map = new mapboxgl.Map({
             container: this.mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -60,8 +62,25 @@ class Map extends React.PureComponent {
             });
         });
 
+        var geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false,
+        });
+
+        this.map.addControl(geocoder, 'top-left');
+
         this.map.on('load', () => {
             const map = this.map;
+
+            //Connect the result!
+            geocoder.on('result', function (ev) {
+                //var styleSpec = ev.result;
+                //var styleSpecBox = document.getElementById('json-response');
+                //var styleSpecText = JSON.stringify(styleSpec, null, 2);
+                //var syntaxStyleSpecText = syntaxHighlight(styleSpecText);
+                //styleSpecBox.innerHTML = syntaxStyleSpecText;
+            });
 
             //Unminted
             map.addSource('unminted-src', {
@@ -201,20 +220,6 @@ class Map extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        //Did the props change?
-        const keys = ['for_sale', 'claimed', 'empty'];
-        for ( let i = 0; i < keys.length; i++ ) {
-            if ( prevProps[keys[i]] != this.props[keys[i]] ) {
-                this.updateTileSet( this.tile_data.empty,
-                    this.tile_data.claimed,
-                    this.tile_data.for_sale,
-                    this.tile_data.unminted,
-                    this.props.filter );
-                return;
-            }
-        }
-
-        //We are scrolling around and need to allow the stateful check to work
         this.new_view = true;
         this.update_view = true;
     }
@@ -240,7 +245,7 @@ class Map extends React.PureComponent {
 
     updateView() {
         const sw = this.map.getBounds()._sw;
-        const { lat, lng, zoom } = this.state;
+        const { lat, lng, zoom } = this.map_state;
         const radius = Geo.distance( lat, lng, sw.lat, sw.lng );
 
         //Query tiles
@@ -284,12 +289,12 @@ class Map extends React.PureComponent {
                         }
                     }
 
-                    this.tile_data.empty = empty;
-                    this.tile_data.claimed = claimed;
-                    this.tile_data.for_sale = for_sale;
-                    this.tile_data.unminted = unminted;
+                    this.map_state.empty = empty;
+                    this.map_state.claimed = claimed;
+                    this.map_state.for_sale = for_sale;
+                    this.map_state.unminted = unminted;
 
-                    this.updateTileSet(this.tile_data.empty, this.tile_data.claimed, this.tile_data.for_sale, this.tile_data.unminted, this.props.filter );
+                    this.updateTileSet(this.map_state.empty, this.map_state.claimed, this.map_state.for_sale, this.map_state.unminted, this.map_state.filter );
                 })
             })
     }
@@ -318,8 +323,16 @@ class Map extends React.PureComponent {
         })
     }
 
-    handleFilter( js ) {
-        this.updateTileSet(this.tile_data.empty, this.tile_data.claimed, this.tile_data.for_sale, this.tile_data.unminted, this.props.filter );
+    handleFilter( filter ) {
+        this.map_state.filter = filter;
+
+        //Update!
+        this.updateTileSet(
+            this.map_state.empty,
+            this.map_state.claimed,
+            this.map_state.for_sale,
+            this.map_state.unminted,
+            this.map_state.filter );
     }
 
     handleSearch( js ) {
@@ -335,10 +348,10 @@ class Map extends React.PureComponent {
     }
 
     render() {
-        //const { lng, lat, zoom } = this.state;
+        //const { lng, lat, zoom } = this.map_state;
+        //<Search />
         return (
             <div>
-                <Search />
                 <FilterBy
                     onChange={this.handleFilter}
                 />
