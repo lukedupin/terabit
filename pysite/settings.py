@@ -1,1 +1,0 @@
-ricky.settings.py
