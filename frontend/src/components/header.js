@@ -1,21 +1,23 @@
 import React from 'react';
-import Util from './helpers/util';
+import ReactDOM from 'react-dom';
+import { Link } from "react-router-dom";
 
-import Container from 'react-bootstrap/Container';
-import Button from "react-bootstrap/Button";
+import Main from '../pages/main';
+import Map from '../pages/map';
+import Contact from '../pages/contact';
+import HowToBuy from '../pages/how_to_buy';
+import Profile from '../pages/profile';
 
-export default class Header extends React.Component {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
     }
 
     render() {
         return (
             <header className="site_header">
                 <nav className="navbar navbar-expand-lg">
-                    <a className="navbar-brand logo_txt" href="#">Terabit</a>
+                    <Link className="navbar-brand logo_txt" to={'/'}>Terabit</Link>
                     <button
                         className="navbar-toggler"
                         type="button"
@@ -29,18 +31,18 @@ export default class Header extends React.Component {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item active">
-                                <a className="nav-link" href="index.html">View Properties</a>
+                                <Link className="nav-link" to={'/map'}>View Properties</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">How to Buy</a>
+                                <Link className="nav-link" to={'/how_to_buy'}>How to Buy</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Contact</a>
+                                <Link className="nav-link" to={'/contact'}>Contact</Link>
                             </li>
                         </ul>
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item pr-0">
-                                <a className="btn btn-ghost" href="profile.html">My Profile</a>
+                                <Link className="btn btn-ghost" to={'/profile'}>My Profile</Link>
                             </li>
                         </ul>
                     </div>
