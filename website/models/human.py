@@ -26,7 +26,7 @@ class Human(models.Model):
     type            = models.IntegerField(choices=TYPE_CHOICES, default=DEFAULT_TYPE)
 
     username        = models.CharField(max_length=64)
-    username_unique = models.CharField(max_length=64, unique=True)
+    username_unique = models.CharField(db_index=True, max_length=64, unique=True)
     password        = models.CharField(max_length=64)
 
     bio             = models.TextField(null=True, default="", blank=True)

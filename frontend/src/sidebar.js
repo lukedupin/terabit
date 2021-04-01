@@ -9,6 +9,8 @@ export default class Sidebar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            human_nfts: {},
+            update_id: 0,
         };
 
         this.linkAccount = this.linkAccount.bind(this);
@@ -18,20 +20,50 @@ export default class Sidebar extends React.Component {
         console.log("Link account");
     }
 
-    render() {
-        const { humans } = this.props;
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const update_id = this.state.update_id;
 
-        //We should sort the humans based on closes to center?
-        const nfts = [
-            { name: "Nft"},
-            {name: "Nft2"}
-        ];
-        const human_ary =[{ username: "Test"}]// Object.entries(humans).map(([ k, h ]) => { h })
+        //If state changed, do nothing, we only care about props
+        if ( prevState.update_id != update_id ) {
+            return;
+        }
+
+        //Update!
+        const human_uids = this.props.humans.map(([k,v]) => k);
+        Util.fetch_js("/nft/bulk_list", { human_uids } )
+            .then( js => {
+                const { humans } = this.props;
+
+                //Initially populate the human part into the nfts
+                let human_nfts = {};
+                for ( let i = 0; i < human_uids.length; i++ ) {
+                    const key = human_uids[i];
+                    human_nfts[key] = { ...human_uids[key], nfts: []};
+                }
+
+                //Build out my nfts based on human_uids
+                for ( let i = 0; i < js.nfts.length; i++ ) {
+                    const nft = js.nfts[i];
+                    if ( nft.human_uid in human_nfts ) {
+                        human_nfts[nft.human_uid].nfts.push( nft );
+                    }
+                }
+
+                //Finally convert this object into an array
+                this.setState({
+                    human_nfts: Object.entries(human_nfts).map(([k,v]) => v),
+                    update_id: update_id + 1, //This prevents the Update call that happens from hitting the server again
+                })
+            })
+    }
+
+    render() {
+        const { human_nfts } = this.state;
 
         return (
             <div className="col-lg-3">
                 <div className="map-listings">
-                    {Object.entries(humans).map(([k,v]) => { <NftCollection human={v} />})}
+                    {Object.entries(human_nfts).map(([k,v]) => <NftCollection human={v} />)}
                 </div>
             </div>
         );

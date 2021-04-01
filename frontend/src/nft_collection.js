@@ -21,7 +21,7 @@ export default class NftCollection extends React.Component {
             <div className="row">
                 <div className="map-listing">
                     <div className="map-listing-head">
-                        <img className="map-listing-profile" src="{human.profile_image}" alt="img"/>
+                        <img className="map-listing-profile" src={human.profile_image} alt="img"/>
                         <div className="map-listing-profile-deets">
                             <a className="user-name" href="#">{human.username}</a>
                             <p className="user-byline">$0.00</p>

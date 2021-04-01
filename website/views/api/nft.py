@@ -2,11 +2,36 @@ from django.conf import settings
 from django.db.models import F, Q
 from django.views.decorators.csrf import csrf_exempt
 
-from website.models import Land, Nft
+from website.models import Land, Nft, Human
 from website.helpers.json_api import reqArgs, jsonResponse, errResponse
 from website.helpers import util, s3, geo, fcm
 
 import json, datetime, time, re, pytz, uuid
+
+
+@csrf_exempt
+@reqArgs(sess_opt=[('usr', dict)],
+         post_req=[
+             ('human_uid', str),
+         ],
+         )
+def list_( request, usr, human_uid, *args, **kwargs ):
+    if (human := Human.getByUid(human_uid)) is None:
+        return errResponse( request, "Not a valid user")
+
+    return jsonResponse( request, { 'nfts': [x.toJson() for x in human.nft_set.order_by('created_on')] })
+
+
+@csrf_exempt
+@reqArgs(sess_opt=[('usr', dict)],
+         post_req=[
+             ('human_uid', list),
+         ],
+         )
+def bulk_list( request, usr, human_uids, *args, **kwargs ):
+    human_ids = [int(human.id) for human in Human.objects.filter(uid__in=[human_uids])]
+
+    return jsonResponse( request, { 'nfts': [x.toJson() for x in Nft.objects.filter(human_id__in=human_ids).order_by('created_on').select_related('human', 'land')] })
 
 
 @csrf_exempt

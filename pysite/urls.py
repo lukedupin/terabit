@@ -28,6 +28,8 @@ urlpatterns = [
     path('human/profile_image/', api_human.profile_image),
     path('human/alert_count/', api_human.alert_count),
 
+    path('nft/bulk_list/', api_nft.bulk_list),
+    path('nft/list/', api_nft.list_),
     path('nft/search_proximity/', api_nft.search_proximity),
 
     path('version/compat/', api_version.compat),
