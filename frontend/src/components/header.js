@@ -29,6 +29,10 @@ export default class App extends React.Component {
         this.setState({ collapsed })
     }
 
+    isActive( test ) {
+        return (test == window.location.pathname)? "active": ""
+    }
+
     render() {
         //Is the nav collapsed?
         const collapsed_klass = (this.state.collapsed)? "collapse": "";
@@ -36,7 +40,7 @@ export default class App extends React.Component {
         return (
             <header className="site_header">
                 <nav className="navbar navbar-expand-lg">
-                    <Link className="navbar-brand logo_txt" to={'/'}>Terabit</Link>
+                    <Link className="navbar-brand logo_txt" to={'/'} onClick={this.collapseNav}>Terabit</Link>
                     <button
                         className="navbar-toggler"
                         type="button"
@@ -45,13 +49,13 @@ export default class App extends React.Component {
                     </button>
                     <div className={collapsed_klass + " navbar-collapse"}>
                         <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active" onClick={this.collapseNav}>
+                            <li className={"nav-item "+ this.isActive('/map')} onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/map'}>View Properties</Link>
                             </li>
-                            <li className="nav-item" onClick={this.collapseNav}>
+                            <li className={"nav-item "+ this.isActive('/how_to_buy')} onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/how_to_buy'}>How to Buy</Link>
                             </li>
-                            <li className="nav-item" onClick={this.collapseNav}>
+                            <li className={"nav-item "+ this.isActive('/contact')} onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/contact'}>Contact</Link>
                             </li>
                         </ul>

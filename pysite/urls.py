@@ -35,6 +35,12 @@ urlpatterns = [
     path('version/compat/', api_version.compat),
     path('version/current/', api_version.current),
 
+    # Render into the app
     path('', TemplateView.as_view(template_name='index.html')),
+    path('map', TemplateView.as_view(template_name='index.html')),
+    path('how_to_buy', TemplateView.as_view(template_name='index.html')),
+    path('contact', TemplateView.as_view(template_name='index.html')),
+    path('profile', TemplateView.as_view(template_name='index.html')),
+
     path('admin/', admin_site.urls),
 ]
