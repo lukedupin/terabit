@@ -25,11 +25,11 @@ def list_( request, usr, human_uid, *args, **kwargs ):
 @csrf_exempt
 @reqArgs(sess_opt=[('usr', dict)],
          post_req=[
-             ('human_uid', list),
+             ('human_uids', list),
          ],
          )
 def bulk_list( request, usr, human_uids, *args, **kwargs ):
-    human_ids = [int(human.id) for human in Human.objects.filter(uid__in=[human_uids])]
+    human_ids = [int(human.id) for human in Human.objects.filter(uid__in=human_uids)]
 
     return jsonResponse( request, { 'nfts': [x.toJson() for x in Nft.objects.filter(human_id__in=human_ids).order_by('created_on').select_related('human', 'land')] })
 

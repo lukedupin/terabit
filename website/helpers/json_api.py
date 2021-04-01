@@ -42,7 +42,7 @@ def convertData( key, typ, raw, default ):
         err = None
         try:
             #Testing cases mostly, we already have a dict of data
-            if isinstance(raw, dict):
+            if isinstance(raw, dict) or isinstance( raw, list ):
                 return (raw, None)
 
             #Convert the string
