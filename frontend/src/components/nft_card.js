@@ -1,8 +1,9 @@
 import React from 'react';
-import Util from './helpers/util';
 
 import Container from 'react-bootstrap/Container';
 import Button from "react-bootstrap/Button";
+
+import Util from '../helpers/util';
 
 export default class NftCard extends React.Component {
     constructor(props) {

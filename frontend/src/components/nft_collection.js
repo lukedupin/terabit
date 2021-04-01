@@ -1,6 +1,7 @@
 import React from 'react';
-import Util from './helpers/util';
+
 import NftCard from './nft_card';
+import Util from '../helpers/util';
 
 export default class NftCollection extends React.Component {
     constructor(props) {
