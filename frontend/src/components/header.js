@@ -11,9 +11,28 @@ import Profile from '../pages/profile';
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            collapsed: true
+        };
+
+        this.toggleNav = this.toggleNav.bind(this)
+        this.collapseNav = this.collapseNav.bind(this)
+    }
+
+    collapseNav( collapsed ) {
+        this.setState({ collapsed })
+    }
+
+    toggleNav() {
+        const collapsed = !this.state.collapsed
+        this.setState({ collapsed })
     }
 
     render() {
+        //Is the nav collapsed?
+        const collapsed_klass = (this.state.collapsed)? "collapse": "";
+
         return (
             <header className="site_header">
                 <nav className="navbar navbar-expand-lg">
@@ -21,27 +40,23 @@ export default class App extends React.Component {
                     <button
                         className="navbar-toggler"
                         type="button"
-                        data-toggle="collapse"
-                        data-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+                        onClick={this.toggleNav}>
+                        <span className="navbar-toggler-icon">HERE?</span>
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div className={collapsed_klass + " navbar-collapse"}>
                         <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active">
+                            <li className="nav-item active" onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/map'}>View Properties</Link>
                             </li>
-                            <li className="nav-item">
+                            <li className="nav-item" onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/how_to_buy'}>How to Buy</Link>
                             </li>
-                            <li className="nav-item">
+                            <li className="nav-item" onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/contact'}>Contact</Link>
                             </li>
                         </ul>
                         <ul className="navbar-nav ml-auto">
-                            <li className="nav-item pr-0">
+                            <li className="nav-item pr-0" onClick={this.collapseNav}>
                                 <Link className="btn btn-ghost" to={'/profile'}>My Profile</Link>
                             </li>
                         </ul>
