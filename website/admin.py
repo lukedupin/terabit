@@ -12,8 +12,9 @@ class MyAdminSite( admin.AdminSite ):
     index_title = 'Terabit admin'
 admin_site = MyAdminSite()
 
-from website.models import Human, Nft, Land
+from website.models import Human, Nft, Land, State
 
 admin_site.register( Human, Human.customAdmin())
 admin_site.register( Nft, Nft.customAdmin())
 admin_site.register( Land, Land.customAdmin())
+admin_site.register( State, State.customAdmin())

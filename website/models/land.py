@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 
 from website.models.human import Human
+from website.models.state import State
 
 from website.helpers import util
 
@@ -21,7 +22,9 @@ class Land(models.Model):
 
     # define my models
     id                  = models.AutoField(primary_key=True)
+
     human               = models.ForeignKey(Human, on_delete=models.CASCADE)
+    state               = models.ForeignKey(State, on_delete=models.CASCADE)
 
     name                = models.CharField(max_length=64, default="", blank=True)
     uid                 = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)

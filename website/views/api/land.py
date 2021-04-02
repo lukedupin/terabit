@@ -18,7 +18,9 @@ import json, datetime, time, re, pytz, uuid
          ],
          )
 def search_proximity( request, usr, lat, lng, radius, *args, **kwargs ):
-    #if radius > 30000: return errResponse( request, "Search area too large" )
+    if radius > 250000:
+        print(radius)
+        return errResponse( request, "Search area too large" )
     if radius < 5000:
         radius = 5000
 
