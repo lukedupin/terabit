@@ -19,6 +19,7 @@ class Nft(models.Model):
     uid                 = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
     desc                = models.TextField(null=True, default="", blank=True)
 
+    img                 = models.CharField(max_length=256, default="", blank=True)
     url                 = models.URLField(default="", null=True, blank=True)
 
     updated_on          = models.DateTimeField(auto_now=True)
@@ -46,6 +47,7 @@ class Nft(models.Model):
             'name':         util.xstr(self.name),
             'desc':         util.xstr(self.desc),
             'url':          util.xstr(self.url),
+            'img':          util.xstr(self.img),
             'updated_on':   util.timeToUnix(self.updated_on),
             'created_on':   util.timeToUnix(self.created_on),
         }
