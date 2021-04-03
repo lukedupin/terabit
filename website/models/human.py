@@ -27,13 +27,11 @@ class Human(models.Model):
 
     username        = models.CharField(max_length=64)
     username_unique = models.CharField(db_index=True, max_length=64, unique=True)
-    password        = models.CharField(max_length=64)
 
+    email           = models.EmailField(max_length=128, default="", blank=True)
     bio             = models.TextField(null=True, default="", blank=True)
-    phone_number    = models.CharField(max_length=16, unique=True)
-    email           = models.EmailField(max_length=64, unique=True)
     real_name       = models.CharField(max_length=64, help_text="Full real name")
-    profile_image   = models.CharField(max_length=96, null=True, default=None, blank=True)
+    profile_image   = models.CharField(max_length=256, null=True, default=None, blank=True)
     nft_count       = models.IntegerField(default=0)
 
     blocked         = models.BooleanField(default=False)
@@ -74,46 +72,6 @@ class Human(models.Model):
         except Human.MultipleObjectsReturned:
             return None
 
-    @staticmethod
-    def getBySession( uid, sess ):
-        try:
-            return Human.objects.get(uid=util.xstr(uid), session=util.xstr(sess))
-        except Human.DoesNotExist:
-            return None
-        except ValidationError:
-            return None
-        except Human.MultipleObjectsReturned:
-            return None
-
-    @staticmethod
-    def getByEmail( email ):
-        try:
-            return Human.objects.get(email=util.xstr(email).lower())
-        except Human.DoesNotExist:
-            return None
-        except Human.MultipleObjectsReturned:
-            return None
-
-    @staticmethod
-    def getByPhoneNumber( phone_number ):
-        try:
-            return Human.objects.get(phone_number=util.xstr(phone_number).lower())
-        except Human.DoesNotExist:
-            return None
-        except Human.MultipleObjectsReturned:
-            return None
-
-    def getProfileUrl(self):
-        if util.xstr(self.profile_image) != "":
-            profile_image = util.xstr(self.profile_image)
-        else:
-            profile_image = 'profiles/avatar_%03d.png' % (util.xint(self.id) % 143)
-
-        return "https://%s.%s.%s/%s" % (settings.S3_ACCESS['BUCKET'],
-                                        settings.S3_ACCESS['REGION'],
-                                        settings.S3_ACCESS['HOST'],
-                                        profile_image)
-
     def profile_tag(self):
         return mark_safe('<img src="%s" style="width:120px;height:120px;" />' % escape(self.getProfileUrl()))
     profile_tag.short_description = 'Profile Image'
@@ -125,7 +83,7 @@ class Human(models.Model):
     def toJson(self):
         return {
             'uid':              util.xstr(self.uid),
-            'profile_image':    util.xstr(self.profile_image), #S3 self.getProfileUrl(),
+            'profile_image':    util.xstr(self.profile_image),
             'type':             self.get_type_display(),
             'username':         util.xstr(self.username),
 
@@ -137,9 +95,9 @@ class Human(models.Model):
     @staticmethod
     def customAdmin( idx=0 ):
         class HumanAdmin(nested_admin.NestedModelAdmin):
-            fields = ('username', 'type', 'blocked', 'bio', 'phone_number', 'email', 'real_name', 'nft_count', 'uid', 'profile_image', 'profile_tag')
+            fields = ('username', 'type', 'blocked', 'bio', 'real_name', 'nft_count', 'uid', 'profile_image', 'profile_tag')
             readonly_fields = ('uid', 'session', 'username_unique', 'profile_tag')
-            search_fields = ('username', 'real_name', 'email', 'phone_number')
+            search_fields = ('username', 'real_name', 'email')
 
         return ( HumanAdmin, None )[idx]
 

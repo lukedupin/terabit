@@ -37,6 +37,38 @@ def bulk_list( request, usr, human_uids, *args, **kwargs ):
 @csrf_exempt
 @reqArgs(sess_opt=[('usr', dict)],
          post_req=[
+             ('human_uid', str),
+             ('address', str),
+             ('name', str),
+             ('desc', str),
+             ('url', str),
+             ('img', str),
+             ('listing_url', str),
+         ],
+         post_opt=[
+             ('story', str),
+         ])
+def create( request, usr, human_uid, address, name, desc, url, img, listing_url, story, *args, **kwargs ):
+    human = Human.objects.first()
+
+    nft = Nft.objects.create(
+        human=human,
+        address=address,
+        name=name,
+        desc=desc,
+
+        img=img,
+        url=url,
+        listing_url=listing_url,
+        story=story,
+    )
+
+    return jsonResponse( request, nft.toJson() )
+
+
+@csrf_exempt
+@reqArgs(sess_opt=[('usr', dict)],
+         post_req=[
              ('lat', float),
              ('lng', float),
              ('radius', float),

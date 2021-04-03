@@ -15,11 +15,12 @@ export default class NftCard extends React.Component {
 
         return (
             <div className="map-listing-item">
-                <img className="map-listing-image" src="/static/images/image-location-default.jpg" alt="img"/>
-                <p className="location-latlong">43.615021, -116.202316</p>
+                <img className="map-listing-image" src={nft.img} alt="img"/>
+                <p className="location-latlong">{nft.address}</p>
                 <p className="location-story">{nft.desc}</p>
                 <p className="tokens-header">{nft.name}</p>
-                <p className="token-title">{nft.url}</p>
+                <a target="_blank" rel="noopener noreferrer" href={nft.url}>Link</a>
+                <a target="_blank" rel="noopener noreferrer" href={nft.listing_url}>Buy</a>
                 <p className="token-desc"></p>
             </div>
         );

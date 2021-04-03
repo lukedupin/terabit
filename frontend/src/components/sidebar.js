@@ -31,36 +31,33 @@ export default class Sidebar extends React.Component {
 
         //Update!
         const human_uids = Object.entries(this.props.humans).map(([k,v]) => k);
-        Util.fetch_js("/nft/bulk_list/", { human_uids } )
-            .then( js => {
-                Util.response(js, () => {
-                    const {humans} = this.props;
+        Util.fetch_js("/nft/bulk_list/", { human_uids }, ( js ) => {
+            const {humans} = this.props;
 
-                    //Initially populate the human part into the nfts
-                    let human_nfts = {};
-                    for (let i = 0; i < human_uids.length; i++) {
-                        const key = human_uids[i];
-                        human_nfts[key] = {
-                            ...this.props.humans[key],
-                            nfts: []
-                        };
-                    }
+            //Initially populate the human part into the nfts
+            let human_nfts = {};
+            for (let i = 0; i < human_uids.length; i++) {
+                const key = human_uids[i];
+                human_nfts[key] = {
+                    ...this.props.humans[key],
+                    nfts: []
+                };
+            }
 
-                    //Build out my nfts based on human_uids
-                    for (let i = 0; i < js.nfts.length; i++) {
-                        const nft = js.nfts[i];
-                        if (nft.human_uid in human_nfts) {
-                            human_nfts[nft.human_uid].nfts.push(nft);
-                        }
-                    }
+            //Build out my nfts based on human_uids
+            for (let i = 0; i < js.nfts.length; i++) {
+                const nft = js.nfts[i];
+                if (nft.human_uid in human_nfts) {
+                    human_nfts[nft.human_uid].nfts.push(nft);
+                }
+            }
 
-                    //Finally convert this object into an array
-                    this.setState({
-                        human_nfts: Object.entries(human_nfts).map(([k, v]) => v),
-                        update_id: update_id + 1, //This prevents the Update call that happens from hitting the server again
-                    })
-                })
+            //Finally convert this object into an array
+            this.setState({
+                human_nfts: Object.entries(human_nfts).map(([k, v]) => v),
+                update_id: update_id + 1, //This prevents the Update call that happens from hitting the server again
             })
+        })
     }
 
     render() {

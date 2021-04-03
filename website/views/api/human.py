@@ -26,8 +26,8 @@ def gen_access_code():
                      ('email', str),
                      ('phone_number', str),
                      ],
-          post_opt=[ ('lat', float),
-                     ('lng', float),
+          post_opt=[ ('email', str),
+                     ('bio', str),
                      ('desc', str),
                      ('real_name', str),
                      ('create_device', bool),
@@ -76,10 +76,6 @@ def create( request, username, email, phone_number, real_name, create_device,
                                    'human': js_usr } )
 
 
-@csrf_exempt
-@reqArgs( sess_req=[('usr', dict)] )
-def is_online(request, usr, *args, **kwargs):
-    return jsonResponse( request, {} )
 
 
 @csrf_exempt

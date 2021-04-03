@@ -14,7 +14,6 @@ urlpatterns = [
     path('land/search_proximity/', api_land.search_proximity),
 
     path('human/create/', api_human.create),
-    path('human/is_online/', api_human.is_online),
     path('human/auth/', api_human.auth),
     path('human/invalidate_auth/', api_human.invalidate_auth),
     path('human/generate_recovery_email_auth/', api_human.generate_recovery_email_auth),
@@ -30,6 +29,7 @@ urlpatterns = [
 
     path('nft/bulk_list/', api_nft.bulk_list),
     path('nft/list/', api_nft.list_),
+    path('nft/create/', api_nft.create),
     path('nft/search_proximity/', api_nft.search_proximity),
 
     path('version/compat/', api_version.compat),

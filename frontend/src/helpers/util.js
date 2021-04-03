@@ -1,14 +1,47 @@
 export default class Util {
 
-    static fetch_js(url, js) {
-        const requestOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(js)
-        };
+    static fetch_js(url, js, succ, err) {
+        let requestOptions = { method: 'GET' };
+        if ( js != null ) {
+            requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(js)
+            };
+        }
 
+        //Defaults?
+        if ( succ == undefined || succ == null ) {
+            succ = (js) => {};
+        }
+        if ( err == undefined || err == null ) {
+            err = (reason, code) => { console.log(reason); };
+        }
+
+        //Query
+        fetch(url, requestOptions).then(resp => resp.json()).then( js => {
+            if (js.successful) {
+                succ(js)
+            } else {
+                err(js.reason, js.code)
+            }
+        })
+    }
+
+    static fetch_raw(url, js) {
+        let requestOptions = { method: 'GET' };
+        if ( js != null ) {
+            requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(js)
+            };
+        }
+
+        //Query
         return fetch(url, requestOptions).then(resp => resp.json())
     }
+
 
     //Helper to take the json blob, and break the logic paths into success and erro
     static response(js, succ, err) {

@@ -245,80 +245,77 @@ export default class Map extends React.Component {
         const radius = Geo.distance( lat, lng, sw.lat, sw.lng );
 
         //Query tiles
-        Util.fetch_js('/land/search_proximity/', { lat, lng, radius })
-            .then( js => {
-                Util.response(js, () => {
-                    let empty = [];
-                    let claimed = [];
-                    let for_sale = [];
-                    let unminted = [];
+        Util.fetch_js('/land/search_proximity/', { lat, lng, radius }, (js) => {
+            let empty = [];
+            let claimed = [];
+            let for_sale = [];
+            let unminted = [];
 
-                    //Load up the humans
-                    let humans = {};
-                    for ( let i = 0; i < js.humans.length; i++) {
-                        humans[js.humans[i].uid] = js.humans[i];
+            //Load up the humans
+            let humans = {};
+            for ( let i = 0; i < js.humans.length; i++) {
+                humans[js.humans[i].uid] = js.humans[i];
+            }
+
+            //Load the lands
+            for ( let i = 0; i < js.lands.length; i++) {
+                const land = js.lands[i];
+
+                const status = land.status.toLowerCase();
+                const coords = Geo.boxCorners( land.lat, land.lng, 500 )
+
+                //Setup my prop, if there is a human associated, then add them to
+                let prop = {
+                    ...land,
+                    profile_image: '',
+                    username: 'Available',
+                };
+                if ( land.human_uid in humans ) {
+                    const human = humans[land.human_uid];
+
+                    prop.profile_image = human.profile_image;
+                    prop.username = human.username;
+                    prop.nft_count += human.nft_count;
+                }
+
+                //Add the feature
+                const obj = {
+                    type: "Feature",
+                    properties: prop,
+                    geometry: {
+                        type: (land.status != 'unminted')? "Polygon": "LineString",
+                        coordinates: (land.status != 'unminted')? [coords]: coords,
                     }
+                };
 
-                    //Load the lands
-                    for ( let i = 0; i < js.lands.length; i++) {
-                        const land = js.lands[i];
-
-                        const status = land.status.toLowerCase();
-                        const coords = Geo.boxCorners( land.lat, land.lng, 500 )
-
-                        //Setup my prop, if there is a human associated, then add them to
-                        let prop = {
-                            ...land,
-                            profile_image: '',
-                            username: 'Available',
-                        };
-                        if ( land.human_uid in humans ) {
-                            const human = humans[land.human_uid];
-
-                            prop.profile_image = human.profile_image;
-                            prop.username = human.username;
-                            prop.nft_count += human.nft_count;
-                        }
-
-                        //Add the feature
-                        const obj = {
-                            type: "Feature",
-                            properties: prop,
-                            geometry: {
-                                type: (land.status != 'unminted')? "Polygon": "LineString",
-                                coordinates: (land.status != 'unminted')? [coords]: coords,
-                            }
-                        };
-
-                        //Add it to the correct array
-                        if ( status == "claimed" ) {
-                            if ( land.nft_count > 0 ) {
-                                claimed.push(obj);
-                            }
-                            else {
-                                empty.push(obj);
-                            }
-                        }
-                        else if ( status == "for sale" ) {
-                            for_sale.push(obj);
-                        }
-                        else {
-                            unminted.push(obj);
-                        }
+                //Add it to the correct array
+                if ( status == "claimed" ) {
+                    if ( land.nft_count > 0 ) {
+                        claimed.push(obj);
                     }
+                    else {
+                        empty.push(obj);
+                    }
+                }
+                else if ( status == "for sale" ) {
+                    for_sale.push(obj);
+                }
+                else {
+                    unminted.push(obj);
+                }
+            }
 
-                    //Store my data
-                    this.map_state.empty = empty;
-                    this.map_state.claimed = claimed;
-                    this.map_state.for_sale = for_sale;
-                    this.map_state.unminted = unminted;
+            //Store my data
+            this.map_state.empty = empty;
+            this.map_state.claimed = claimed;
+            this.map_state.for_sale = for_sale;
+            this.map_state.unminted = unminted;
 
-                    this.updateTileSet(this.map_state.empty, this.map_state.claimed, this.map_state.for_sale, this.map_state.unminted, this.map_state.filter );
+            this.updateTileSet(this.map_state.empty, this.map_state.claimed, this.map_state.for_sale, this.map_state.unminted, this.map_state.filter );
 
-                    //Cause a state update which will update the side bar
-                    this.setState({ humans })
-                })
-            })
+            //Cause a state update which will update the side bar
+            this.setState({ humans })
+        })
     }
 
     updateTileSet( empty, claimed, for_sale, unminted, filter ) {
