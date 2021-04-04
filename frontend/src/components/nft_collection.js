@@ -32,8 +32,8 @@ export default class NftCollection extends React.Component {
                         </div>
                     </div>
 
-                    {Object.entries(human.nfts).map(([k, nft]) =>
-                        <NftCard nft={nft}/>)}
+                    {Object.entries(human.nfts).map( ([key, nft]) =>
+                        <NftCard key="{key}" nft={nft}/>)}
                 </div>
             </div>
         );

@@ -66,7 +66,8 @@ export default class Sidebar extends React.Component {
         return (
             <div className="col-lg-3">
                 <div className="map-listings">
-                    {Object.entries(human_nfts).map(([k,v]) => <NftCollection human={v} />)}
+                    {Object.entries(human_nfts).map(([key,human]) =>
+                        <NftCollection key="{k}" human={human} />)}
                 </div>
             </div>
         );

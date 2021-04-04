@@ -27,8 +27,8 @@ export default class Profile extends React.Component {
 
         Util.fetch_js('/human/generate_nonce/', {public_key: account}, (js) => {
             console.log(js.nonce);
-            console.log( window.web3 );
-            web3.personal.sign( js.nonce, account, (err, sig) => {
+            console.log( window.web3.eth );
+            web3.eth.personal.sign( js.nonce, account, (err, sig) => {
                 console.log( sig );
             });
         });
