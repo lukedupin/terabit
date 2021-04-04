@@ -38,6 +38,9 @@ p{
 .site_header{
 	border-bottom: 1px solid #e5e5e5;
 }
+.logomark-header{
+	margin-right: 10px;
+}
 .logo_txt{
 	font-size: 16px;
 	font-weight: bold;
@@ -444,6 +447,200 @@ img.map-listing-profile{
 	margin: 0px 20px 20px;
 }
 
+/* ---___--- Landing ---___--- */
+
+h1 {
+	font-size: 46px;
+	font-weight: 700;
+}
+h2 {
+	font-size: 36px;
+	line-height: 46px;
+	font-weight: 700;
+}
+h2.h2-skinny {
+	font-size: 52px;
+	line-height: 62px;
+	font-weight: 400;
+}
+h3{
+	font-weight: 700;
+	font-size: 21px;
+	margin-bottom: 10px;
+}
+dl{}
+dt{
+	font-size: 14px;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+	opacity: .5;
+}
+dd{
+	font-size: 18px;
+	line-height: 28px;
+	margin-bottom: 40px;
+}
+
+
+
+span.pre-head {
+	font-size: 14px;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+	display: block;
+}
+
+
+body.marketing{}
+body.marketing p{
+	font-size: 18px;
+	line-height: 28px;
+	margin-bottom: 20px;
+}
+body.marketing a{
+	color: #107869;
+}
+body.marketing a.btn{
+	color: #fff;
+}
+body.marketing a.btn-ghost{
+	color: #107869;
+}
+body.marketing a:hover.btn-ghost{
+	color: #fff;
+}
+body.marketing hr{
+	width: 40px;
+	border-top: 10px solid #000;
+	margin-top: 20px;
+	margin-bottom: 40px;
+	display: inline-block;
+}
+body.marketing hr.reverse{
+	border-top: 10px solid #fff;
+}
+@keyframes animatedBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+
+section#hero{}
+.hero-text{
+	margin: 150px auto 200px;
+}
+.hero-img{
+	background-image: url(../images/mkt-abstland-3.jpg);
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	animation: animatedBackground 60s ease-in-out infinite alternate;
+}
+section#hero .btn{
+	float: left;
+	clear: both;
+	margin-top: 10px;
+}
+section#manifest{
+}
+.manifest{
+	background: #000;
+	color: #fff;
+	padding-top: 200px;
+	padding-bottom: 200px;
+}
+
+section#benefits{}
+.benefits-row-one{
+	margin-top: 200px;
+}
+.benefits-row-two{
+	margin-top: 80px;
+	margin-bottom: 200px;
+}
+
+section#function{
+	background: #000;
+	color: #fff;
+}
+.function-text{
+	margin-top: 120px;
+	margin-bottom: 120px;
+}
+.function-img{
+	background-image: url(../images/mkt-abstland-1.jpg);
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	animation: animatedBackground 60s ease-in-out infinite alternate;
+}
+a.twitter-icon-button{
+	display: block;
+	margin-top: 40px;
+}
+a:hover.twitter-icon-button{
+	opacity: .66;
+}
+
+section#deliverable{}
+section#deliverable h2{
+	margin-top: 140px;
+	margin-bottom: 80px;
+}
+.deliverable-row-one{
+}
+.deliverable-row-two{
+	margin-top: 80px;
+	margin-bottom: 140px;
+}
+
+section#howtobuy{
+	background: #000;
+	color: #fff;
+}
+.howtobuy-text{
+	margin-top: 120px;
+	margin-bottom: 120px;
+}
+.howtobuy-img{
+	background-image: url(../images/mkt-abstland-2.jpg);
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	animation: animatedBackground 60s ease-in-out infinite alternate;
+}
+
+section#developers{}
+.developers{
+	margin-top: 120px;
+	margin-bottom: 120px;
+}
+.developers h2{
+	margin-bottom: 60px;
+}
+.developers-img{
+	text-align: center;
+}
+
+section#dudes{
+	background: #000;
+	color: #fff;
+}
+.dudes-text{
+	margin-top: 120px;
+	margin-bottom: 120px;
+}
+.dudes-img{
+	background-image: url(../images/mkt-dudes.jpg);
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+
 /* ---___--- RESPONSIVE ---___--- */
 
 @media (max-width: 992px) {
@@ -454,51 +651,44 @@ img.map-listing-profile{
 		overflow: auto;
 	}
 
+	.hero-img, .function-img, .howtobuy-img, .dudes-img{
+		height: 400px;
+	}
+
+	.hero-text, .function-text, .howtobuy-text, .dudes-text{
+		margin-top: 60px;
+		margin-bottom: 60px;
+	}
+	.manifest{
+		padding-top: 80px;
+		padding-bottom: 80px;
+	}
+	.benefits-row-one{
+		margin-top: 60px;
+	}
+	.benefits-row-two{
+		margin-top: 0;
+		margin-bottom: 60px;
+	}
+	section#deliverable h2{
+		margin-top: 60px;
+		margin-bottom: 60px;
+	}
+	.deliverable-row-one{
+	}
+	.deliverable-row-two{
+		margin-top: 0;
+		margin-bottom: 60px;
+	}
+	.developers{
+		margin-top: 60px;
+		margin-bottom: 60px;
+	}
+	.developers-img{
+		display: none;
+	}
 
 }
 
 
 /*************end*************/
-
-/**** RICKY REPLACE/REMOVE THESE PLEASE *****/
-
-.map-container {
-    position: absolute;
-    top: 80px;
-    right: 120px;
-    left: 0;
-    bottom: 0;
-}
-
-.header-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-}
-
-.search {
-    background-color: rgba(35, 55, 75, 0.9);
-    color: #ffffff;
-    padding: 6px 12px;
-    font: 15px/24px monospace;
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 12px;
-    border-radius: 4px;
-}
-
-.mapboxgl-popup-tip {
-    display: none;
-}
-
-.mapboxgl-popup-content {
-	min-width: 173px;
-	border-radius: 3px;
-	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-	border: solid 1px #e5e5e5;
-	background-color: rgba(255, 255, 255, 0.9);
-	padding: 10px;
-}
