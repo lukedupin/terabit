@@ -4,7 +4,7 @@ from website.cache import DEFAULT_TIMEOUT
 from website.models import Human
 from website.helpers import util
 
-import json
+import json, random
 
 
 def accessCodeKey( code ):
@@ -47,3 +47,22 @@ def execRecoveryAccessCode( human_uid ):
     cache.delete( key )
 
     return code
+
+# Generate a nonce for a given user
+def generateNonce( addr ):
+    key = 'nonce_%s' % addr
+    nonce = '0x'
+    for _ in range(4):
+        nonce += '%08X' % random.randint(0, 0xFFFFFFFF)
+    cache.set(key, nonce, 10) # Very short amount of time
+
+    return nonce
+
+# Get teh nonce
+def takeNonce( addr ):
+    key = 'nonce_%s' % addr
+    nonce = cache.get( key )
+    if nonce is not None:
+        cache.delete( key )
+
+    return nonce

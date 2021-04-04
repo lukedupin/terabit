@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
 import Util from '../helpers/util';
+import web3 from 'web3';
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -20,8 +21,19 @@ export default class Profile extends React.Component {
             this.setState({err: "No account found"})
         }
 
+        /*
         const account = accounts[0];
         console.log(account)
+
+        Util.fetch_js('/human/generate_nonce/', {public_key: account}, (js) => {
+            console.log(js.nonce);
+            console.log( window.web3 );
+            web3.personal.sign( js.nonce, account, (err, sig) => {
+                console.log( sig );
+            });
+        });
+         */
+
         const address = "0xFe5B4b73Fd25dD1b0692266c5cD105E61721BE65";
         Util.fetch_raw("https://api.opensea.io/api/v1/assets?owner="+ address +"&limit=20")
             .then( js => {

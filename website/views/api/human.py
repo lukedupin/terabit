@@ -76,6 +76,15 @@ def create( request, username, email, phone_number, real_name, create_device,
                                    'human': js_usr } )
 
 
+@csrf_exempt
+@reqArgs( post_req=[
+              ('public_key', str),
+          ],
+        )
+def generate_nonce( request, public_key, *args, **kwargs ):
+    nonce = cache.generateNonce( public_key)
+
+    return jsonResponse( request, { 'nonce': nonce } )
 
 
 @csrf_exempt

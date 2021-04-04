@@ -56,7 +56,6 @@ def create( request, usr, human_uid, address, name, desc, url, img, listing_url,
         address=address,
         name=name,
         desc=desc,
-
         img=img,
         url=url,
         listing_url=listing_url,

@@ -14,6 +14,7 @@ urlpatterns = [
     path('land/search_proximity/', api_land.search_proximity),
 
     path('human/create/', api_human.create),
+    path('human/generate_nonce/', api_human.generate_nonce),
     path('human/auth/', api_human.auth),
     path('human/invalidate_auth/', api_human.invalidate_auth),
     path('human/generate_recovery_email_auth/', api_human.generate_recovery_email_auth),
