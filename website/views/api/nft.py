@@ -86,36 +86,40 @@ def resync( request, usr, nfts, *args, **kwargs ):
     result = []
     for nft in nfts:
         # Update them remove from the kill list
-        if nft.address in kill_list:
-            x = kill_list[nft.address]
-            x.name = nft.name
-            x.desc = nft.desc
-            x.img = nft.img
-            x.url = nft.url
-            x.listing_url = nft.listing_url
-            x.save()
+        update = None
+        if nft['address'] in kill_list:
+            update = kill_list[nft['address']]
+            del kill_list[nft['address']]
 
-            del kill_list[nft.address]
+        else:
+            update = Nft.getByAddress(nft['address'])
 
+        # Do an update?
+        if update is not None:
+            update.human = human
+            update.name = nft['name']
+            update.desc = nft['desc']
+            update.img = nft['img']
+            update.url = nft['url']
+            update.listing_url = nft['listing_url']
+            update.save()
 
-        try:
+            result.append( update.toJson() )
+
+        else:
             x = Nft.objects.create(
                 human=human,
-                address=nft.address,
-                name=nft.name,
-                desc=nft.desc,
-                img=nft.img,
-                url=nft.url,
-                listing_url=nft.listing_url,
+                address=nft['address'],
+                name=nft['name'],
+                desc=nft['desc'],
+                img=nft['img'],
+                url=nft['url'],
+                listing_url=nft['listing_url'],
             )
             result.append( x.toJson() )
 
-        except IntegrityError:
-            continue
-
     # Delete anything left in the kill list
-    for key in kill_list.keys():
-        kill_list[key].delete()
+    #for key in kill_list.keys(): kill_list[key].delete()
 
     # Update the nft count
     human.nft_count = len(result)

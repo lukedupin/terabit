@@ -43,6 +43,13 @@ class Nft(models.Model):
         except Nft.DoesNotExist:
             return None
 
+    @staticmethod
+    def getByAddress(address):
+        try:
+            return Nft.objects.get(address=util.xstr(address).lower())
+        except Nft.DoesNotExist:
+            return None
+
     #Convert my data to json
     def toJson(self):
         return {
