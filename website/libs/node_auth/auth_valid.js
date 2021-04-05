@@ -26,6 +26,8 @@ try {
 
     // The signature verification is successful if the address found with
     // ecrecover matches the initial publicAddress
+    console.log( address.toLowerCase())
+    console.log( publicAddress.toLowerCase() )
     process.exit( (address.toLowerCase() === publicAddress.toLowerCase())? 0: 1 );
 }
 catch (err) {

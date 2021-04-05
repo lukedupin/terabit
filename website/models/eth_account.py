@@ -12,7 +12,7 @@ from website.helpers import util
 
 import math, uuid, re, nested_admin
 
-class MetamaskAccount(models.Model):
+class EthAccount(models.Model):
     # define my models
     id              = models.AutoField(primary_key=True)
 
@@ -35,19 +35,30 @@ class MetamaskAccount(models.Model):
     @staticmethod
     def getById( id ):
         try:
-            return MetamaskAccount.objects.get(id=util.xint(id))
-        except MetamaskAccount.DoesNotExist:
+            return EthAccount.objects.get(id=util.xint(id))
+        except EthAccount.DoesNotExist:
             return None
 
     @staticmethod
     def getByUid( uid ):
         try:
-            return MetamaskAccount.objects.get(uid=util.xstr(uid))
-        except MetamaskAccount.DoesNotExist:
+            return EthAccount.objects.get(uid=util.xstr(uid))
+        except EthAccount.DoesNotExist:
             return None
         except ValidationError:
             return None
-        except MetamaskAccount.MultipleObjectsReturned:
+        except EthAccount.MultipleObjectsReturned:
+            return None
+
+    @staticmethod
+    def getByAddress( uid ):
+        try:
+            return EthAccount.objects.get(address=util.xstr(uid).lower())
+        except EthAccount.DoesNotExist:
+            return None
+        except ValidationError:
+            return None
+        except EthAccount.MultipleObjectsReturned:
             return None
 
     def toJson(self):
@@ -58,8 +69,8 @@ class MetamaskAccount(models.Model):
 
     @staticmethod
     def customAdmin( idx=0 ):
-        class MetamaskAccountAdmin(nested_admin.NestedModelAdmin):
+        class EthAccountAdmin(nested_admin.NestedModelAdmin):
             pass
 
-        return ( MetamaskAccountAdmin, None )[idx]
+        return ( EthAccountAdmin, None )[idx]
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import F, Q
+from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
 from website.models import Land, Nft, Human
@@ -35,9 +36,8 @@ def bulk_list( request, usr, human_uids, *args, **kwargs ):
 
 
 @csrf_exempt
-@reqArgs(sess_opt=[('usr', dict)],
+@reqArgs(sess_req=[('usr', dict)],
          post_req=[
-             ('human_uid', str),
              ('address', str),
              ('name', str),
              ('desc', str),
@@ -48,21 +48,80 @@ def bulk_list( request, usr, human_uids, *args, **kwargs ):
          post_opt=[
              ('story', str),
          ])
-def create( request, usr, human_uid, address, name, desc, url, img, listing_url, story, *args, **kwargs ):
-    human = Human.objects.first()
+def create( request, usr, address, name, desc, url, img, listing_url, story, *args, **kwargs ):
+    if (human := Human.getById(usr['id'])) is None:
+        return errResponse( request, "Please login first")
 
-    nft = Nft.objects.create(
-        human=human,
-        address=address,
-        name=name,
-        desc=desc,
-        img=img,
-        url=url,
-        listing_url=listing_url,
-        story=story,
-    )
+    try:
+        nft = Nft.objects.create(
+            human=human,
+            address=address,
+            name=name,
+            desc=desc,
+            img=img,
+            url=url,
+            listing_url=listing_url,
+            story=story,
+        )
+
+    except IntegrityError:
+        return errResponse( request, "Duplicate key")
 
     return jsonResponse( request, nft.toJson() )
+
+
+@csrf_exempt
+@reqArgs(sess_req=[('usr', dict)],
+         post_req=[
+             ('nfts', list),
+         ])
+def resync( request, usr, nfts, *args, **kwargs ):
+    if (human := Human.getById(usr['id'])) is None:
+        return errResponse( request, "Please login first")
+
+    # Get a list of NFTs
+    kill_list = {util.xstr(nft.address): nft for nft in human.nft_set.all()}
+
+    # List of Nfts
+    result = []
+    for nft in nfts:
+        # Update them remove from the kill list
+        if nft.address in kill_list:
+            x = kill_list[nft.address]
+            x.name = nft.name
+            x.desc = nft.desc
+            x.img = nft.img
+            x.url = nft.url
+            x.listing_url = nft.listing_url
+            x.save()
+
+            del kill_list[nft.address]
+
+
+        try:
+            x = Nft.objects.create(
+                human=human,
+                address=nft.address,
+                name=nft.name,
+                desc=nft.desc,
+                img=nft.img,
+                url=nft.url,
+                listing_url=nft.listing_url,
+            )
+            result.append( x.toJson() )
+
+        except IntegrityError:
+            continue
+
+    # Delete anything left in the kill list
+    for key in kill_list.keys():
+        kill_list[key].delete()
+
+    # Update the nft count
+    human.nft_count = len(result)
+    human.save()
+
+    return jsonResponse( request, { 'nfts': result })
 
 
 @csrf_exempt

@@ -13,24 +13,16 @@ admin.autodiscover()
 urlpatterns = [
     path('land/search_proximity/', api_land.search_proximity),
 
-    path('human/create/', api_human.create),
     path('human/generate_nonce/', api_human.generate_nonce),
-    path('human/auth/', api_human.auth),
+    path('human/auth_by_nonce/', api_human.auth_by_nonce),
     path('human/invalidate_auth/', api_human.invalidate_auth),
-    path('human/generate_recovery_email_auth/', api_human.generate_recovery_email_auth),
-    path('human/recovery_email_auth/', api_human.recovery_email_auth),
-    path('human/generate_recovery_phone_number_auth/', api_human.generate_recovery_phone_number_auth),
-    path('human/recovery_phone_number_auth/', api_human.recovery_phone_number_auth),
     path('human/is_unique/', api_human.is_unique),
-    path('human/modify/', api_human.modify),
     path('human/desc/', api_human.desc),
-    path('human/bulk_desc/', api_human.bulk_desc),
-    path('human/profile_image/', api_human.profile_image),
-    path('human/alert_count/', api_human.alert_count),
 
     path('nft/bulk_list/', api_nft.bulk_list),
     path('nft/list/', api_nft.list_),
     path('nft/create/', api_nft.create),
+    path('nft/resync/', api_nft.resync),
     path('nft/search_proximity/', api_nft.search_proximity),
 
     path('version/compat/', api_version.compat),

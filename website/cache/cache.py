@@ -54,7 +54,9 @@ def generateNonce( addr ):
     nonce = '0x'
     for _ in range(4):
         nonce += '%08X' % random.randint(0, 0xFFFFFFFF)
-    cache.set(key, nonce, 10) # Very short amount of time
+
+    #nonce = random.randint(0, 0xFFFFFFFF)
+    cache.set(key, nonce, 60) # Very short amount of time
 
     return nonce
 

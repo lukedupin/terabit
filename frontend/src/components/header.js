@@ -102,7 +102,7 @@ export default class App extends React.Component {
                         <Modal.Header closeButton>
                             <Modal.Title>Get Started</Modal.Title>
                         </Modal.Header>
-                        { (!reload_required)? <Modal.Body>Yo, you need MetaMask to get started with this stuff</Modal.Body>:
+                        { (!reload_required)? <Modal.Body>Please install the Metamask plugin before attempting to view your profile.</Modal.Body>:
                                               <Modal.Body>Reloading the page is required for MetaMask changes to take effect.</Modal.Body>}
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleCloseModal}>
