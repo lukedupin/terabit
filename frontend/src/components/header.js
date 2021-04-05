@@ -66,10 +66,25 @@ export default class App extends React.Component {
 
         const has_meta_mask = (typeof window.ethereum !== 'undefined');
 
+        //<Link className="navbar-brand logo_txt" to={'/'} onClick={this.collapseNav}>Terabit</Link>
+
+        /*
+        <li className={"nav-item "+ this.isActive('/how_to_buy')} onClick={this.collapseNav}>
+            <Link className="nav-link" to={'/how_to_buy'}>How to Buy</Link>
+        </li>
+        <li className={"nav-item "+ this.isActive('/contact')} onClick={this.collapseNav}>
+            <Link className="nav-link" to={'/contact'}>Contact</Link>
+        </li>
+         */
+
         return (
             <header className="site_header">
                 <nav className="navbar navbar-expand-lg">
+                    <Link to={'/'} onClick={this.collapseNav}>
+                        <img className="logomark-header" src="/static/images/logo-terabit-header.png" width="26" height="26" alt="Terabit"/>
+                    </Link>
                     <Link className="navbar-brand logo_txt" to={'/'} onClick={this.collapseNav}>Terabit</Link>
+
                     <button
                         className="navbar-toggler"
                         type="button"
@@ -81,11 +96,11 @@ export default class App extends React.Component {
                             <li className={"nav-item "+ this.isActive('/map')} onClick={this.collapseNav}>
                                 <Link className="nav-link" to={'/map'}>View Properties</Link>
                             </li>
-                            <li className={"nav-item "+ this.isActive('/how_to_buy')} onClick={this.collapseNav}>
-                                <Link className="nav-link" to={'/how_to_buy'}>How to Buy</Link>
+                            <li className="nav-item" onClick={this.collapseNav}>
+                                <a className="nav-link" href="https://twitter.com/get_terabit" target="_blank">Twitter</a>
                             </li>
-                            <li className={"nav-item "+ this.isActive('/contact')} onClick={this.collapseNav}>
-                                <Link className="nav-link" to={'/contact'}>Contact</Link>
+                            <li className={"nav-item"} onClick={this.collapseNav}>
+                                <a className="nav-link" href="https://discord.gg/Cj75nDpG" target="_blank">Discord</a>
                             </li>
                         </ul>
                         <ul className="navbar-nav ml-auto">
