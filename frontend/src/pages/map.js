@@ -53,7 +53,8 @@ export default class Map extends React.Component {
         const { lng, lat, zoom } = this.map_state;
         this.map = new mapboxgl.Map({
             container: this.mapContainer.current,
-            style: 'mapbox://styles/mapbox/streets-v11',
+            style: 'mapbox://styles/terabit/ckn51om3s04pr17p6i2j7ojpg',
+            //style: 'mapbox://styles/mapbox/streets-v11',
             center: [lng, lat],
             zoom: zoom
         });
