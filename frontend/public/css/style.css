@@ -548,7 +548,7 @@ section#hero{}
 	margin: 150px auto 200px;
 }
 .hero-img{
-	background-image: url(../images/mkt-abstland-3.jpg);
+	background-image: url(/static/images/mkt-abstland-3.jpg);
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	animation: animatedBackground 60s ease-in-out infinite alternate;
@@ -585,7 +585,7 @@ section#function{
 	margin-bottom: 120px;
 }
 .function-img{
-	background-image: url(../images/mkt-abstland-1.jpg);
+	background-image: url(/static/images/mkt-abstland-1.jpg);
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	animation: animatedBackground 60s ease-in-out infinite alternate;
@@ -619,7 +619,7 @@ section#howtobuy{
 	margin-bottom: 120px;
 }
 .howtobuy-img{
-	background-image: url(../images/mkt-abstland-2.jpg);
+	background-image: url(/static/images/mkt-abstland-2.jpg);
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	animation: animatedBackground 60s ease-in-out infinite alternate;
@@ -646,7 +646,7 @@ section#dudes{
 	margin-bottom: 120px;
 }
 .dudes-img{
-	background-image: url(../images/mkt-dudes.jpg);
+	background-image: url(/static/images/mkt-dudes.jpg);
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	background-size: cover;

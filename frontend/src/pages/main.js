@@ -78,7 +78,7 @@ export default class Main extends React.Component {
                                             <p>We’ve broken apart the entire world based on lat/long, and created smart contracts for each parcel.</p>
                                             <p>Follow the Terabit Twitter to learn about new land grabs as they become available.</p>
                                             <a className="twitter-icon-button" href="https://twitter.com/get_terabit" target="_blank">
-                                                <img src="images/icon-twitter.png" width="49" height="40" alt="Follow Terabit Twitter" />
+                                                <img src="/static/images/icon-twitter.png" width="49" height="40" alt="Follow Terabit Twitter" />
                                             </a>
                                     </div>
                                 </div>
