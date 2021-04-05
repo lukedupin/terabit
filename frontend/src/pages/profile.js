@@ -175,7 +175,7 @@ export default class Profile extends React.Component {
                 </div>
             );
         }
-        //Show an error
+        //User needs to connect Meta mask
         else if ( !connected ) {
             return (
                 <div>

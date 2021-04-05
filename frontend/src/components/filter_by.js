@@ -21,7 +21,7 @@ export default class FilterBy extends React.Component {
             <div className="map-grid-filter">
                 <ul>
                     <li>
-                        <label className="check_item check_item_1" onChange={() => this.setState({ for_sale: !for_sale })}>For sale
+                        <label className="check_item check_item_4" onChange={() => this.setState({ for_sale: !for_sale })}>For sale
                             <input type="checkbox" checked={for_sale} tabIndex="0" readOnly={true}/>
                             <span className="checkmark"></span>
                         </label>
@@ -33,14 +33,8 @@ export default class FilterBy extends React.Component {
                         </label>
                     </li>
                     <li>
-                        <label className="check_item check_item_3" onChange={() => this.setState({ empty: !empty})}>Empty
+                        <label className="check_item check_item_1" onChange={() => this.setState({ empty: !empty})}>Empty
                             <input type="checkbox" checked={empty} tabIndex="3" readOnly={true} />
-                            <span className="checkmark"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label className="check_item check_item_4">A thing
-                            <input type="checkbox" tabIndex="4" readOnly={true} />
                             <span className="checkmark"></span>
                         </label>
                     </li>
