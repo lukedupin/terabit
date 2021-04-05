@@ -138,8 +138,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/opt/terabit/frontend/build/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/build'),
-    os.path.join(BASE_DIR, 'frontend/build/static'),
+    #os.path.join(BASE_DIR, 'frontend/build'),
+    #os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
 
 S3_ACCESS = {
