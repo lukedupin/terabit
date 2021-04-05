@@ -30,7 +30,7 @@ def generate_nonce( request, public_key, *args, **kwargs ):
 def auth_by_nonce( request, public_key, signature, *args, **kwargs ):
     nonce = cache.takeNonce( public_key )
     cmd = f'{settings.BASE_DIR}/website/libs/node_auth/sig_valid.js'
-    result = subprocess.run(('/usr/bin/node', cmd, public_key, nonce, signature))
+    result = subprocess.run((settings.NODE_PATH, cmd, public_key, nonce, signature))
     if result.returncode != 0:
         return errResponse( request, "Invalid signature")
 
