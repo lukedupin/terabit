@@ -125,7 +125,7 @@ def resync( request, usr, nfts, *args, **kwargs ):
     human.nft_count = len(result)
     human.save()
 
-    return jsonResponse( request, { 'nfts': result })
+    return jsonResponse( request, { 'human': human.toJson(), 'nfts': result })
 
 
 @csrf_exempt

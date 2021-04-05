@@ -57,8 +57,10 @@ export default class Profile extends React.Component {
         this.setState({ resynced: true })
 
         //Resync everything
+        address = '0xfe5b4b73fd25dd1b0692266c5cd105e61721be65'
         Util.fetch_raw("https://api.opensea.io/api/v1/assets?owner="+ address +"&limit=100")
             .then( js => {
+                let owner = null;
                 let clean_assets = [];
 
                 //Load up the assests the person has
@@ -72,15 +74,36 @@ export default class Profile extends React.Component {
                         img: asset.image_url,
                         listing_url: asset.permalink,
                     })
+
+                    //Store the image
+                    if ( 'owner' in asset && 'user' in asset.owner ) {
+                        owner = {
+                            username:       asset.owner.user.username,
+                            profile_image:  asset.owner.profile_img_url,
+                        }
+                    }
                 }
 
                 //Reset the nfts
                 Util.fetch_js("/nft/resync/", { 'nfts': clean_assets },
                     (js) => {
-                        this.setState({ nfts: js.nfts });
+                        this.setState({
+                            human: js.human,
+                            nfts: js.nfts,
+                        });
                     },
                     (err, code) => {
                     });
+
+                //Update teh user?
+                if ( owner != null ) {
+                    Util.fetch_js("/human/soft_modify/", owner,
+                        (human) => {
+                            this.setState({human});
+                        },
+                        (err, code) => {
+                        });
+                }
             })
     }
 

@@ -73,7 +73,7 @@ class Human(models.Model):
             return None
 
     def profile_tag(self):
-        return mark_safe('<img src="%s" style="width:120px;height:120px;" />' % escape(self.getProfileUrl()))
+        return mark_safe('<img src="%s" style="width:120px;height:120px;" />' % escape(self.profile_image))
     profile_tag.short_description = 'Profile Image'
 
     def save(self, *args, **kwargs):

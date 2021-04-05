@@ -100,16 +100,15 @@ def is_unique( request, usr, username, *args, **kwargs ):
 @reqArgs( sess_req=[('usr', dict)],
           post_opt=[
               ('username', str),
-              ('desc', str),
+              ('bio', str),
               ('real_name', str),
               ('email', str),
-              ('phone_number', str),
+              ('profile_image', str),
           ]
         )
-def modify( request, usr, username, desc, real_name, email, phone_number, *args, **kwargs ):
+def modify( request, usr, username, bio, real_name, email, profile_image, *args, **kwargs ):
     # Load up the user info
-    human = Human.getById(usr['id'])
-    if human is None:
+    if (human := Human.getById(usr['id'])) is None:
         return errResponse( request, "Couldn't find a valid user, even though you're logged in...")
 
     # Is the account blocked?
@@ -123,11 +122,12 @@ def modify( request, usr, username, desc, real_name, email, phone_number, *args,
                 return errResponse( request, "Username must be unique")
             human.username = username
 
-    if desc is not None:
-        human.desc = desc
-
+    if bio is not None:
+        human.bio = bio
     if real_name is not None:
         human.real_name = real_name
+    if profile_image is not None:
+        human.profile_image = profile_image
 
     if email is not None:
         email = common.cleanEmail(email)
@@ -136,16 +136,43 @@ def modify( request, usr, username, desc, real_name, email, phone_number, *args,
                 return errResponse( request, "Email must be unique")
             human.email = email
 
-    if phone_number is not None:
-        phone_number = common.cleanPhoneNumber(phone_number)
-        if human.phone_number != phone_number:
-            if phone_number is None:
-                return errResponse(request, "Phone number must be 10 digits")
-            if human.getByPhoneNumber(phone_number) is not None:
-                return errResponse(request, "Phone number must be unique")
-            human.phone_number = phone_number
+    # Save out the objects
+    human.save()
+
+    return jsonResponse( request, human.toJson() )
+
+
+@csrf_exempt
+@reqArgs( sess_req=[('usr', dict)],
+          post_opt=[
+              ('username', str),
+              ('profile_image', str),
+          ]
+        )
+def soft_modify( request, usr, username, profile_image, *args, **kwargs ):
+    # Load up the user info
+    if (human := Human.getById(usr['id'])) is None:
+        return errResponse( request, "Couldn't find a valid user, even though you're logged in...")
+
+    # Is the account blocked?
+    if human.blocked:
+        return errResponse( request, "Account blocked")
+
+    # Don't update if we have already changed from default
+    if not util.xstr(human.username_unique).startswith("usr_"):
+        return errResponse( request, "Already updated")
+
+    if username is not None:
+        username = common.cleanName(username)
+        if human.username != username:
+            if Human.getByUsername(username) is not None:
+                return errResponse( request, "Username must be unique")
+            human.username = username
+
+    if profile_image is not None:
+        human.profile_image = profile_image
 
     # Save out the objects
     human.save()
 
-    return jsonResponse( request, human.toJsonFull() )
+    return jsonResponse( request, human.toJson() )

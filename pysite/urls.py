@@ -16,6 +16,8 @@ urlpatterns = [
     path('human/generate_nonce/', api_human.generate_nonce),
     path('human/auth_by_nonce/', api_human.auth_by_nonce),
     path('human/invalidate_auth/', api_human.invalidate_auth),
+    path('human/soft_modify/', api_human.soft_modify),
+    path('human/modify/', api_human.modify),
     path('human/is_unique/', api_human.is_unique),
     path('human/desc/', api_human.desc),
 
