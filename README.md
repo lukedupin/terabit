@@ -53,3 +53,8 @@ Quit the server with CONTROL-C.
 2. yarn install **Run this only once after initial checkout** 
 3. npm run build **Run this every time you make a change on the frontend**
 4. With the django server running, open your browser: http://localhost:8000/
+
+# Setup the auth challenege logic
+
+1. cd website/libs/node_auth
+2. npm install
