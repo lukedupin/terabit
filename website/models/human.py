@@ -29,9 +29,9 @@ class Human(models.Model):
     username_unique = models.CharField(db_index=True, max_length=64, unique=True)
 
     email           = models.EmailField(max_length=128, default="", blank=True)
-    bio             = models.TextField(null=True, default="", blank=True)
+    bio             = models.TextField(null=True, default="Bio", blank=True)
     real_name       = models.CharField(max_length=64, help_text="Full real name")
-    profile_image   = models.CharField(max_length=256, null=True, default=None, blank=True)
+    profile_image   = models.CharField(max_length=256, null=True, default="/static/images/user-default.png", blank=True)
     nft_count       = models.IntegerField(default=0)
 
     blocked         = models.BooleanField(default=False)

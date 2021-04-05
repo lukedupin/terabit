@@ -8,11 +8,6 @@ export default class NftCollection extends React.Component {
         super(props);
         this.state = {
         };
-
-        this.handleBuy = this.handleBuy.bind(this);
-    }
-
-    handleBuy() {
     }
 
     render() {
@@ -25,10 +20,7 @@ export default class NftCollection extends React.Component {
                         <img className="map-listing-profile" src={human.profile_image} alt="img"/>
                         <div className="map-listing-profile-deets">
                             <a className="user-name" href="#">{human.username}</a>
-                            <p className="user-byline">$0.00</p>
-                        </div>
-                        <div className="map-listing-cta">
-                            <a className="btn" href="#" onClick={this.handleBuy}>Buy</a>
+                            <p className="user-byline"></p>
                         </div>
                     </div>
 

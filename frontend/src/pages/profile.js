@@ -57,7 +57,6 @@ export default class Profile extends React.Component {
         this.setState({ resynced: true })
 
         //Resync everything
-        address = '0xfe5b4b73fd25dd1b0692266c5cd105e61721be65'
         Util.fetch_raw("https://api.opensea.io/api/v1/assets?owner="+ address +"&limit=100")
             .then( js => {
                 let owner = null;
@@ -164,8 +163,21 @@ export default class Profile extends React.Component {
             return (<Redirect to="/" />)
         }
 
-        const {loading, connected, resynced, human, addresses, nfts} = this.state;
-        const address = (addresses.length > 0)? addresses[0]: ""
+        const {loading, connected, addresses, nfts} = this.state;
+        //const address = (addresses.length > 0)? addresses[0]: ""
+
+        //Pull the human but set a default
+        let { human } = this.state;
+        if ( !('username' in human) ) {
+            human = {
+                username: 'Terabit profile',
+                profile_image: '/static/images/user-default.png',
+                bio: 'Bio',
+            };
+        }
+
+        //User needs to connect Meta mask
+        const conn_str = ( connected )? "Reconnect MetaMask": "Connect MetaMask";
 
         //Loading... spinner?
         if ( loading ) {
@@ -175,26 +187,42 @@ export default class Profile extends React.Component {
                 </div>
             );
         }
-        //User needs to connect Meta mask
-        else if ( !connected ) {
-            return (
-                <div>
-                    <Button onClick={this.handleConnectMetaMask}>Connect MetaMask</Button>
-                </div>
-            );
-        }
-        //We have a valid profile, query the NFTs and show it
-        else {
-            return (
-                <div>
-                    <div>Name: {human.username}</div>
-                    <div>Account: {address}</div>
 
-                    <div>Nft count: {human.nft_count}</div>
-                    {Object.entries(nfts).map( ([key, nft]) =>
-                        <NftCard key="{key}" nft={nft}/>)}
+        return (
+            <section className="app-body">
+
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-lg-3">
+                            <div className="myprofile">
+                                <img className="myprofile-image" src={human.profile_image} alt="img"/>
+                                <p className="myprofile-name">{human.username}</p>
+                                <a className="btn btn-ghost" href="#" onClick={this.handleConnectMetaMask}>{conn_str}</a>
+                                <a className="link-color" href="#"></a>
+                                <hr/>
+                                <p className="myprofile-bio">{human.bio}</p>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-9">
+                            <div className="row">
+
+                                {Object.entries(nfts).map( ([key, nft]) =>
+                                    <div className="nft-card" key="{key}">
+                                        <img className="nft-card-image" src={nft.img} alt="img"/>
+                                        <p className="nft-name">{nft.name}</p>
+                                        <p className="nft-desc">{nft.desc}</p>
+                                        <a target="_blank" rel="noopener noreferrer" href={nft.url}>Link</a>
+                                        <a target="_blank" rel="noopener noreferrer" href={nft.listing_url}>Buy</a>
+                                    </div>
+                                )}
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            );
-        }
+
+            </section>
+        );
     }
 }
