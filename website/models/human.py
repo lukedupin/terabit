@@ -12,8 +12,10 @@ import math, uuid, re
 
 class Human(models.Model):
     TYPE_NORMAL     = 1
+    TYPE_MINTER     = 2
     TYPE_CHOICES = (
         (TYPE_NORMAL, "Normal"),
+        (TYPE_MINTER, "Minter"),
     )
     DEFAULT_TYPE = TYPE_NORMAL
 

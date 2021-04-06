@@ -4,52 +4,82 @@ from django.core.cache import caches
 from website.models import Human, Land, State
 from website.helpers import geo, util
 
-import datetime, pytz, sys, os
+import datetime, pytz, sys, os, json
 
 class Command(BaseCommand):
     help = 'Load up past captures and calculat encounters'
 
     def add_arguments(self, parser):
-        parser.add_argument('human_uid', type=str)
-        parser.add_argument('path_file', type=str)
+        parser.add_argument('path', type=str)
 
     # Run the command
     def handle(self, *args, **options):
-        if (human := Human.getByUid( options['human_uid'] )) is None:
+        js = json.loads( open(options['path']).read())
+
+        if (human := Human.getByUsername( js['username'] )) is None:
             print("We need a human to attach all this land to!")
             return
 
-        count = 0
-        points = []
-        handle = open(options['path_file'], "r")
+        if (state := State.getByName(js['state_name'])) is None:
+            print(f"Creating state: {js['state_name']}")
+            state = State.objects.create(name=js['state_name'])
 
-        # Read all the data in the file, loading up props
-        for line in handle.readlines():
-            name, lat, lng = line.rstrip().split(',')
+        # Define the names
+        lat, lng, name, mode = [js[x] for x in ('lat', 'lng', 'name', 'mode')]
 
-            if (state := State.getByName(name)) is None:
-                print(f"Creating state: {name}")
-                state = State.objects.create(
+        if mode == "grid":
+            row, col = [js[x] for x in ('row', 'col')]
+            if row & 1 != 1 or col & 1 != 1:
+                print("Please make sure row/col are both odd numbers")
+                return
+
+            cur_lat, cur_lng = lat, lng
+            for _ in range(int(row / 2)):
+                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 180 )
+
+            for _ in range(int(col / 2)):
+                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 270 )
+
+            # Build!
+            for _c in range(col):
+                tmp_lng = cur_lng
+                for _r in range(row):
+                    Land.objects.create(
+                        human=human,
+                        state=state,
+                        name=name,
+                        lat=cur_lat,
+                        lng=tmp_lng,
+                    )
+                    cur_lat, tmp_lng = geo.distanceBearing(cur_lat, tmp_lng, 1000, 90)
+                cur_lat, cur_lng = geo.distanceBearing(cur_lat, cur_lng, 1000, 0)
+
+
+        elif mode in ("up", 'down', 'left', 'right'):
+            # Get the direction we are going to move
+            dir = 0
+            if mode == 'down':
+                dir = 180
+            elif mode == 'left':
+                dir = 270
+            elif mode == 'right':
+                dir = 90
+
+            dist = js['dist']
+
+            # Start at the start, and behing creating land
+            cur_lat, cur_lng = lat, lng
+            while geo.distance( lat, lng, cur_lat, cur_lng ) < dist:
+                Land.objects.create(
+                    human=human,
+                    state=state,
                     name=name,
+                    lat=cur_lat,
+                    lng=cur_lng,
                 )
 
-            # Add the land, we'll create in bulk for speed
-            points.append( Land(
-                human=human,
-                state=state,
-                lat=lat,
-                lng=lng,
-            ))
-            if len(points) >= 1024:
-                count += len(points)
-                Land.objects.bulk_create( points )
-                points = []
-                print(count)
+                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, dir )
 
-        if len(points) > 0:
-            count += len(points)
-            Land.objects.bulk_create( points )
-            points = []
-
-        print("")
-        print(f"Minted {count} plots of land")
+        else:
+            print("Invalid mode, it can be either: vert or horz, up, down, left, right")
+            return
