@@ -215,7 +215,7 @@ export default class Profile extends React.Component {
                             <div className="row">
 
                                 {Object.entries(nfts).map( ([key, nft]) =>
-                                    <div className="nft-card" key="{key}">
+                                    <div className="nft-card" key={"profile_nft_"+ key}>
                                         <img className="nft-card-image" src={nft.img} alt="img"/>
                                         <p className="nft-name">{nft.name}</p>
                                         <p className="nft-desc">{nft.desc}</p>
