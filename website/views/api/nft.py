@@ -118,6 +118,15 @@ def resync( request, usr, nfts, *args, **kwargs ):
             )
             result.append( x.toJson() )
 
+        # Assign land?
+        if nft['creator_username'] == "Get-Terabit" and \
+           nft['creator_address'] == "0x53390851b2884fa2b9bc885e8df00bf409e0be08" and \
+           (land_guid := re.match(r'^https://get-terabit.com/map\?land=([0-9a-fA-F-]+)$', nft['url'])) is not None:
+            if (land := Land.getByUid( land_guid.groups()[0])) is not None:
+                land.human_id = usr['id']
+                land.status = Land.STATUS_CLAIMED
+                land.save()
+
     # Delete anything left in the kill list
     #for key in kill_list.keys(): kill_list[key].delete()
 

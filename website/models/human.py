@@ -8,7 +8,7 @@ from django.conf import settings
 
 from website.helpers import util
 
-import math, uuid, re, nested_admin
+import math, uuid, re
 
 class Human(models.Model):
     TYPE_NORMAL     = 1
@@ -94,10 +94,17 @@ class Human(models.Model):
 
     @staticmethod
     def customAdmin( idx=0 ):
-        class HumanAdmin(nested_admin.NestedModelAdmin):
+        from website.models import EthAccount
+
+        class EthAccountInline(admin.TabularInline):
+            model = EthAccount
+            extra = 0
+
+        class HumanAdmin(admin.ModelAdmin):
             fields = ('username', 'type', 'blocked', 'bio', 'real_name', 'nft_count', 'uid', 'profile_image', 'profile_tag')
             readonly_fields = ('uid', 'session', 'username_unique', 'profile_tag')
             search_fields = ('username', 'real_name', 'email')
+            inlines = (EthAccountInline, )
 
         return ( HumanAdmin, None )[idx]
 

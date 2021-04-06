@@ -54,6 +54,13 @@ class Land(models.Model):
         except Land.DoesNotExist:
             return None
 
+    @staticmethod
+    def getByUid( uid ):
+        try:
+            return Land.objects.get(uid=util.xstr(uid))
+        except Land.DoesNotExist:
+            return None
+
     #Convert my data to json
     def toJson(self):
         return {

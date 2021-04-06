@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'pysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'terabit',                      # Or path to database file if using sqlite3.
+        'NAME': 'teradb',                      # Or path to database file if using sqlite3.
         'USER': 'ldupin',                      # Not used with sqlite3.
         'PASSWORD': 'aibeb4ahviZ8ooNg',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
