@@ -73,5 +73,6 @@ class Land(models.Model):
     def customAdmin( idx=0 ):
         class LandAdmin(admin.ModelAdmin):
             list_display = ('status', 'lat', 'lng', 'name')
+            readonly_fields = ('uid',)
 
         return ( LandAdmin, None )[idx]

@@ -30,7 +30,7 @@ class Human(models.Model):
 
     email           = models.EmailField(max_length=128, default="", blank=True)
     bio             = models.TextField(null=True, default="Bio", blank=True)
-    real_name       = models.CharField(max_length=64, help_text="Full real name")
+    real_name       = models.CharField(max_length=64, help_text="Full real name", blank=True, default="")
     profile_image   = models.CharField(max_length=256, null=True, default="/static/images/user-default.png", blank=True)
     nft_count       = models.IntegerField(default=0)
 
