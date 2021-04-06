@@ -4,3 +4,4 @@
 pysite/settings.py
 frontend/package-lock.json
 *.lock
+website/libs/node_auth/package-lock.json
