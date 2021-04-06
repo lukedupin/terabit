@@ -3,3 +3,4 @@
 **/__pycache__
 pysite/settings.py
 frontend/package-lock.json
+*.lock
