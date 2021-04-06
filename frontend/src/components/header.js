@@ -89,7 +89,7 @@ export default class App extends React.Component {
                         className="navbar-toggler"
                         type="button"
                         onClick={this.toggleNav}>
-                        <span className="navbar-toggler-icon">HERE?</span>
+                        <i className="fas fa-bars"></i>
                     </button>
                     <div className={collapsed_klass + " navbar-collapse"}>
                         <ul className="navbar-nav mr-auto">

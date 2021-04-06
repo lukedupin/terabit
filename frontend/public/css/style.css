@@ -41,6 +41,9 @@ p{
 .logomark-header{
 	margin-right: 10px;
 }
+.navbar-toggler {
+	color: #107869;
+}
 .logo_txt{
 	font-size: 16px;
 	font-weight: bold;
@@ -656,6 +659,9 @@ section#dudes{
 /* ---___--- RESPONSIVE ---___--- */
 
 @media (max-width: 992px) {
+	.site_header .navbar-nav .nav-link {
+		
+	}
 	.map-grid{
 		height: 400px;
 	}
