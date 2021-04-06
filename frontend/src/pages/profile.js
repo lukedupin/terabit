@@ -65,6 +65,9 @@ export default class Profile extends React.Component {
                 //Load up the assests the person has
                 for ( let i = 0; i < js.assets.length; i++ ) {
                     const asset = js.assets[i];
+
+                    const creator = asset.creator;
+
                     clean_assets.push({
                         address: asset.asset_contract.address,
                         name: asset.name,
@@ -72,10 +75,14 @@ export default class Profile extends React.Component {
                         url: asset.external_link,
                         img: asset.image_url,
                         listing_url: asset.permalink,
+
+                        creator_username: ('user' in creator)? creator.user.username: '',
+                        creator_address: creator.address,
                     })
 
                     //Store the image
-                    if ( 'owner' in asset && 'user' in asset.owner ) {
+                    if ( 'owner' in asset && 'user' in asset.owner &&
+                         asset.owner.user.username != "NullAddress" ) {
                         owner = {
                             username:       asset.owner.user.username,
                             profile_image:  asset.owner.profile_img_url,

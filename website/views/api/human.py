@@ -48,7 +48,7 @@ def auth_by_nonce( request, public_key, signature, *args, **kwargs ):
         )
 
     # Store teh session
-    usr = {'id': int(human.id), **eth.human.toJson()}
+    usr = {'id': int(eth.human_id), **eth.human.toJson()}
     request.session['usr'] = usr
 
     return jsonResponse( request, desc( None, usr ) )
