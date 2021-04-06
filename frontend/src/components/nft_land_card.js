@@ -19,11 +19,11 @@ export default class NftLandCard extends React.Component {
                     <a className="btn" target="_blank" rel="noopener noreferrer" href={nft.listing_url}>Buy</a>
                 </div>
                 <img className="map-listing-image" src={nft.img} alt="img"/>
-                <p className="location-latlong"></p>
+                <p className="location-story"></p>
+                <p className="tokens-header">Tokens</p>
+                <p class="token-title">{nft.name}</p>
+                <p className="token-desc">{nft.desc}</p>
                 <a className="link-color" target="_blank" rel="noopener noreferrer" href={nft.url}>Link</a>
-                <p className="location-story">{nft.desc}</p>
-                <p className="tokens-header">{nft.name}</p>
-                <p className="token-desc"></p>
             </div>
         );
     }
