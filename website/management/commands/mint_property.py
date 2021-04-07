@@ -43,16 +43,13 @@ class Command(BaseCommand):
 
         if mode == "grid":
             row, col = [js[x] for x in ('row', 'col')]
-            if row & 1 != 1 or col & 1 != 1:
-                print("Please make sure row/col are both odd numbers")
-                return
 
             cur_lat, cur_lng = lat, lng
-            for _ in range(int(row / 2)):
-                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 180 )
+            for _ in range(int((row - 1) / 2)):
+                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 0 )
 
-            for _ in range(int(col / 2)):
-                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 90 )
+            for _ in range(int((col - 1) / 2)):
+                cur_lat, cur_lng = geo.distanceBearing( cur_lat, cur_lng, 1000, 270 )
 
             # Build!
             for _c in range(col):
@@ -72,8 +69,8 @@ class Command(BaseCommand):
                         lat=cur_lat,
                         lng=tmp_lng,
                     ))
-                    cur_lat, tmp_lng = geo.distanceBearing(cur_lat, tmp_lng, 1000, 270)
-                cur_lat, cur_lng = geo.distanceBearing(cur_lat, cur_lng, 1000, 0)
+                    cur_lat, tmp_lng = geo.distanceBearing(cur_lat, tmp_lng, 1000, 90)
+                cur_lat, cur_lng = geo.distanceBearing(cur_lat, cur_lng, 1000, 180)
 
 
         elif mode in ("up", 'down', 'left', 'right'):
@@ -82,9 +79,9 @@ class Command(BaseCommand):
             if mode == 'down':
                 dir = 180
             elif mode == 'left':
-                dir = 90
-            elif mode == 'right':
                 dir = 270
+            elif mode == 'right':
+                dir = 90
 
             dist = js['dist']
 
