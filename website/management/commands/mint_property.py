@@ -67,6 +67,7 @@ class Command(BaseCommand):
                     points.append( Land(
                         human=human,
                         state=state,
+                        status=Land.STATUS_FOR_SALE,
                         name=name,
                         lat=cur_lat,
                         lng=tmp_lng,
@@ -81,9 +82,9 @@ class Command(BaseCommand):
             if mode == 'down':
                 dir = 180
             elif mode == 'left':
-                dir = 270
-            elif mode == 'right':
                 dir = 90
+            elif mode == 'right':
+                dir = 270
 
             dist = js['dist']
 
@@ -93,6 +94,7 @@ class Command(BaseCommand):
                 points.append( Land(
                     human=human,
                     state=state,
+                    status=Land.STATUS_FOR_SALE,
                     name=name,
                     lat=cur_lat,
                     lng=cur_lng,
