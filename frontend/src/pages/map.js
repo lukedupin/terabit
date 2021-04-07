@@ -121,9 +121,9 @@ export default class Map extends React.Component {
                 'source': 'empty-src',
                 'layout': {},
                 'paint': {
-                    'fill-color': '#723502',
-                    'fill-opacity': 0.25,
-                    'fill-outline-color': '#723502',
+                    'fill-color': '#000000',
+                    'fill-opacity': 0.33,
+                    'fill-outline-color': '#000000',
                 }
             });
 
@@ -142,7 +142,7 @@ export default class Map extends React.Component {
                 'layout': {},
                 'paint': {
                     'fill-color': '#5CD85A',
-                    'fill-opacity': 0.25,
+                    'fill-opacity': 0.50,
                     'fill-outline-color': '#5CD85A',
                 }
             });
@@ -162,7 +162,7 @@ export default class Map extends React.Component {
                 'layout': {},
                 'paint': {
                     'fill-color': '#F2D54C',
-                    'fill-opacity': 0.25,
+                    'fill-opacity': 0.50,
                     'fill-outline-color': '#F2D54C',
                 }
             });
