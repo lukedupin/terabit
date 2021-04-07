@@ -1,10 +1,12 @@
 {
     "username": "TeraMint",
     "state_name": "California",
-    "mode": "up",
-    "name": "Golden Gate Bridge",
+    "mode": "grid",
+    "name": "Santa Cruz Beach Boardwalk",
+    "lat": 36.964308,
+    "lng": -122.017233,
     "check_water": false,
-    "lat": 37.810251,
-    "lng": -122.477122,
-    "dist": 2500
+    "row": 1,
+    "col": 1,
+    "skip": []
 }
