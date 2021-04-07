@@ -45,7 +45,7 @@ class Land(models.Model):
 
     #Returns a friendly name for the admin interface
     def __str__(self):
-        return "%.4f, %.4f" % (self.lat, self.lng)
+        return "%s @ %.4f, %.4f" % (self.name, self.lat, self.lng)
 
     @staticmethod
     def getById( id ):
@@ -60,6 +60,10 @@ class Land(models.Model):
             return Land.objects.get(uid=util.xstr(uid))
         except Land.DoesNotExist:
             return None
+        
+    def external_url(self):
+        return f"https://get-terabit.com/map?land={self.uid}"
+    external_url.short_description = 'External Url'
 
     #Convert my data to json
     def toJson(self):
@@ -79,7 +83,7 @@ class Land(models.Model):
     @staticmethod
     def customAdmin( idx=0 ):
         class LandAdmin(admin.ModelAdmin):
-            list_display = ('status', 'lat', 'lng', 'name')
+            list_display = ('__str__', 'external_url', 'status')
             readonly_fields = ('uid',)
 
         return ( LandAdmin, None )[idx]
