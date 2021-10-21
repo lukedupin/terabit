@@ -83,15 +83,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'terabit',                      # Or path to database file if using sqlite3.
         'USER': 'teradb',                      # Not used with sqlite3.
-        'PASSWORD': 'AwyvqzSvKQWZuhmAczzMt3s3',                  # Not used with sqlite3.
-        'HOST': 'terabitdb.cdckzawoscs7.us-west-2.rds.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PASSWORD': 'XXXXXX',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         'TEST': {
             'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'terabit',                      # Or path to database file if using sqlite3.
             'USER': 'teradb',                      # Not used with sqlite3.
-            'PASSWORD': 'AwyvqzSvKQWZuhmAczzMt3s3',                  # Not used with sqlite3.
-            'HOST': 'terabitdb.cdckzawoscs7.us-west-2.rds.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PASSWORD': 'XXXXXX',                  # Not used with sqlite3.
+            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         }
     }
