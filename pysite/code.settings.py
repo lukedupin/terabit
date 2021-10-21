@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '51#p^^)sh*crh&6jq#n$duhk0s)nf=6cru#!@qn3r^lvn_855p'
+SECRET_KEY = 'XXXXXXXXXXXXXX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,15 +81,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'teradb',                      # Or path to database file if using sqlite3.
-        'USER': 'ldupin',                      # Not used with sqlite3.
-        'PASSWORD': 'aibeb4ahviZ8ooNg',                  # Not used with sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': 'XXXXXXXXXXXXX',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         'TEST': {
             'ENGINE': 'django.db.backends.postgresql', # Add ' mysql postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'terabit_test',                      # Or path to database file if using sqlite3.
-            'USER': 'ldupin',                      # Not used with sqlite3.
-            'PASSWORD': 'aibeb4ahviZ8ooNg',                  # Not used with sqlite3.
+            'USER': '',                      # Not used with sqlite3.
+            'PASSWORD': 'XXXXXXXXXXXXX',                  # Not used with sqlite3.
             'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         }
